@@ -94,6 +94,11 @@
   }
   body {
     @apply bg-background text-foreground antialiased transition-colors duration-300;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  code, pre {
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 

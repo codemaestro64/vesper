@@ -1,7 +1,9 @@
+import HeroSection from "@/components/sections/Hero";
+
 const Home = () => {
   return (
-    <div className="flex items-center justify-center">
-      s
+    <div className="min-h-screen bg-background pt-16">
+      <HeroSection />
     </div>
   );
 }
