@@ -205,4 +205,12 @@
   .glow-border {
     box-shadow: var(--shadow-glow), inset 0 0 0 1px hsl(var(--primary) / 0.1);
   }
+
+  .glow-primary {
+    box-shadow: 0 0 20px hsl(174 72% 52% / 0.15), 0 0 60px hsl(174 72% 52% / 0.05);
+  }
+
+  .glow-primary-intense {
+    box-shadow: 0 0 30px hsl(174 72% 52% / 0.3), 0 0 80px hsl(174 72% 52% / 0.1);
+  }
 }

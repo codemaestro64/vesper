@@ -3,7 +3,6 @@ import type {
   ContractParts,
   FeatureMixin,
 } from "@vesper/types"
-import { getContractTemplate } from "../helpers"
 
 // ═════════════════════════════════════════════════════════════════════════════
 // Multi-Sig
@@ -58,12 +57,9 @@ function submitBatch(
 }
 
 const type  = "multisig"
-const contractTemplate = getContractTemplate(type)
 
 export const multisigGenerator: ContractGenerator = {
   type: type,
-  availableFeatures: contractTemplate?.availableFeatures ?? [],
-  defaultFeatures: contractTemplate?.defaultFeatures ?? [],
 
   baseParts(ctx): ContractParts {
     const { name, description } = ctx.config

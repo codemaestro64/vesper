@@ -1,4 +1,5 @@
 import type { ContractTemplate } from "@vesper/types"
+import { Coins } from "lucide-react"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Contract Template Registry
@@ -9,7 +10,7 @@ export const contractTemplates: ContractTemplate[] = [
     type: 'erc20',
     label: 'ERC-20 Token',
     description: 'Fungible token standard for currencies, utility tokens, and governance.',
-    icon: '🪙',
+    icon: 'erc20',
     defaultFeatures: [],
     availableFeatures: [
       {
@@ -62,7 +63,7 @@ export const contractTemplates: ContractTemplate[] = [
     type: 'erc721',
     label: 'ERC-721 NFT',
     description: 'Non-fungible tokens for unique digital assets, collectibles, and identity.',
-    icon: '🎨',
+    icon: 'erc721',
     defaultFeatures: ['uri-storage'],
     availableFeatures: [
       {
@@ -113,9 +114,9 @@ export const contractTemplates: ContractTemplate[] = [
 
   {
     type: 'erc1155',
-    label: 'ERC-1155 Multi-Token',
+    label: 'Multi-Token',
     description: 'Efficient multi-token standard for both fungible and non-fungible tokens.',
-    icon: '💎',
+    icon: 'erc1155',
     defaultFeatures: [],
     availableFeatures: [
       {
@@ -150,7 +151,7 @@ export const contractTemplates: ContractTemplate[] = [
     type: 'staking',
     label: 'Staking Contract',
     description: 'Lock ERC-20 tokens to earn yield rewards over time.',
-    icon: '📈',
+    icon: 'staking',
     defaultFeatures: [],
     availableFeatures: [
       {
@@ -185,7 +186,7 @@ export const contractTemplates: ContractTemplate[] = [
     type: 'governance',
     label: 'Governance',
     description: 'On-chain voting and proposal execution for DAOs.',
-    icon: '🏛️',
+    icon: 'governance',
     defaultFeatures: ['timelock', 'quorum'],
     availableFeatures: [
       {
@@ -215,7 +216,7 @@ export const contractTemplates: ContractTemplate[] = [
     type: 'multisig',
     label: 'Multi-Sig Wallet',
     description: 'M-of-N wallet requiring multiple owner signatures per transaction.',
-    icon: '🔐',
+    icon: 'multisig',
     defaultFeatures: [],
     availableFeatures: [
       {

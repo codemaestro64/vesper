@@ -4,7 +4,6 @@ import type {
   FeatureMixin,
 } from "@vesper/types"
 import { royaltiesMixin } from "./shared"
-import { getContractTemplate } from "../helpers"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ERC-721 Feature Mixins
@@ -250,12 +249,9 @@ function tokenURI(uint256 tokenId) public view override returns (string memory) 
 // ─────────────────────────────────────────────────────────────────────────────
 
 const type  = "erc721"
-const contractTemplate = getContractTemplate(type)
 
 export const erc721Generator: ContractGenerator = {
   type: type,
-  availableFeatures: contractTemplate?.availableFeatures ?? [],
-  defaultFeatures: contractTemplate?.defaultFeatures ?? [],
 
   baseParts(ctx): ContractParts {
     const { name, symbol = 'NFT', description } = ctx.config

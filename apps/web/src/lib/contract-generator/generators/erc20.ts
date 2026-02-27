@@ -3,7 +3,6 @@ import type {
   ContractParts,
   FeatureMixin,
 } from "@vesper/types"
-import { getContractTemplate } from "../helpers"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ERC-20 Feature Mixins
@@ -278,13 +277,9 @@ function unpause() external onlyOwner {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const type  = "erc20"
-const contractTemplate = getContractTemplate(type)
 
 export const erc20Generator: ContractGenerator = {
   type: type,
-  availableFeatures: contractTemplate?.availableFeatures ?? [],
-  defaultFeatures: contractTemplate?.defaultFeatures ?? [],
-
   baseParts(ctx): ContractParts {
     const { name, symbol = 'TKN', description } = ctx.config
     const initialSupply = '1_000_000'

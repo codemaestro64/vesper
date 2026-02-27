@@ -3,18 +3,14 @@ import type {
   ContractGenerator,
   ContractParts,
 } from "@vesper/types"
-import { getContractTemplate } from "../helpers"
 
 // ═════════════════════════════════════════════════════════════════════════════
 // Governance
 // ═════════════════════════════════════════════════════════════════════════════
 const type  = "governance"
-const contractTemplate = getContractTemplate(type)
 
 export const governanceGenerator: ContractGenerator = {
   type: type,
-  availableFeatures: contractTemplate?.availableFeatures ?? [],
-  defaultFeatures: contractTemplate?.defaultFeatures ?? [],
 
   baseParts(ctx): ContractParts {
     const { name, description, features } = ctx.config

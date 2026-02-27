@@ -3,7 +3,6 @@ import type {
   ContractParts,
   FeatureMixin,
 } from "@vesper/types"
-import { getContractTemplate } from "../helpers"
 
 // ═════════════════════════════════════════════════════════════════════════════
 // Staking
@@ -95,12 +94,9 @@ function setEmergencyPenalty(uint256 newBps) external onlyOwner {
 }
 
 const type  = "staking"
-const contractTemplate = getContractTemplate(type)
 
 export const stakingGenerator: ContractGenerator = {
   type: type,
-  availableFeatures: contractTemplate?.availableFeatures ?? [],
-  defaultFeatures: contractTemplate?.defaultFeatures ?? [],
 
   baseParts(ctx): ContractParts {
     const { name, description } = ctx.config

@@ -4,8 +4,6 @@ import type {
   FeatureMixin,
 } from "@vesper/types"
 import { royaltiesMixin } from "./shared"
-import { getContractTemplate } from "../helpers"
-
 
 // ═════════════════════════════════════════════════════════════════════════════
 // ERC-1155
@@ -125,12 +123,9 @@ function unpause() external onlyOwner { _unpause(); }`,
   },
 }
 const type  = "erc1155"
-const contractTemplate = getContractTemplate(type)
 
 export const erc1155Generator: ContractGenerator = {
   type: type,
-  availableFeatures: contractTemplate?.availableFeatures ?? [],
-  defaultFeatures: contractTemplate?.defaultFeatures ?? [],
 
   baseParts(ctx): ContractParts {
     const { name, description } = ctx.config
