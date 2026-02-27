@@ -28,9 +28,9 @@ const TRUST_POINTS = [
   },
   {
     icon: Code2,
-    title: "Open, readable output.",
+    title: 'Open, readable output.',
     description: "The generated code is written to be read by humans — not minified, not obfuscated. Every function is documented. Every import is explicit. You always know exactly what you're deploying.",
-    accent: "hsl(199 89% 55%)",
+    accent: 'hsl(199 89% 55%)',
   },
   {
     icon: FileCode,
@@ -71,7 +71,7 @@ export default function TrustSection() {
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
-    <section ref={ref} className="relative py-28 overflow-hidden">
+    <section id="trust" ref={ref} className="relative py-28 overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
 
       {/* Marquee — full bleed */}

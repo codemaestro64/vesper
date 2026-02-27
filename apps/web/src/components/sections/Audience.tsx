@@ -62,7 +62,7 @@ export default function AudienceSection() {
   const activeAudience = AUDIENCES.find(a => a.id === active)!
 
   return (
-    <section ref={ref} className="relative py-28 px-4 sm:px-6 overflow-hidden">
+    <section id="audience" ref={ref} className="relative py-28 px-4 sm:px-6 overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
 
       <div className="max-w-6xl mx-auto">

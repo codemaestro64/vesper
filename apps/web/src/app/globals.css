@@ -1,20 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  /* Fonts */
-  --font-sans: "Inter", ui-sans-serif, system-ui;
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui;
   --font-mono: "JetBrains Mono", monospace;
-  --font-display: 'Space Grotesk', ui-sans-serif, system-ui;
-
-  /* Radius */
   --radius-xl: 0.75rem;
-
-  /* Custom Variables for Gradients/Shadows */
-  --gradient-primary: linear-gradient(135deg, hsl(174 72% 50%) 0%, hsl(199 89% 48%) 100%);
-  --shadow-glow: 0 0 40px hsl(174 72% 50% / 0.2);
-  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
-
-  /* Default Dark Theme Mapping */
+  --gradient-primary: linear-gradient(135deg, hsl(38 95% 58%) 0%, hsl(22 90% 52%) 100%);
+  --shadow-glow: 0 0 40px hsl(38 95% 58% / 0.2);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-elevated: 0 16px 48px rgba(0, 0, 0, 0.6);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -35,103 +28,85 @@
   --color-ring: var(--ring);
 }
 
-/* Base Variable Definitions */
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
 
   :root {
-    /* DARK THEME (Default) */
-    --background: hsl(222 47% 6%);
-    --foreground: hsl(210 40% 98%);
-    --card: hsl(222 47% 8%);
-    --card-foreground: hsl(210 40% 98%);
-    --popover: hsl(222 47% 10%);
-    --popover-foreground: hsl(210 40% 98%);
-    --primary: hsl(174 72% 50%);
-    --primary-foreground: hsl(222 47% 6%);
-    --secondary: hsl(222 30% 14%);
-    --secondary-foreground: hsl(210 40% 98%);
-    --muted: hsl(222 30% 18%);
-    --muted-foreground: hsl(215 20% 55%);
-    --accent: hsl(174 72% 40%);
-    --accent-foreground: hsl(210 40% 98%);
+    /* Dark theme — smouldering amber on deep charcoal */
+    --background: hsl(20 12% 6%);
+    --foreground: hsl(38 25% 94%);
+    --card: hsl(20 12% 8%);
+    --card-foreground: hsl(38 25% 94%);
+    --popover: hsl(20 12% 10%);
+    --popover-foreground: hsl(38 25% 94%);
+    --primary: hsl(38 95% 58%);
+    --primary-foreground: hsl(20 12% 6%);
+    --secondary: hsl(20 10% 13%);
+    --secondary-foreground: hsl(38 25% 94%);
+    --muted: hsl(20 10% 16%);
+    --muted-foreground: hsl(30 12% 52%);
+    --accent: hsl(22 90% 52%);
+    --accent-foreground: hsl(20 12% 6%);
     --destructive: hsl(0 72% 51%);
-    --border: hsl(222 30% 18%);
-    --border2: 220 14% 16%;
-    --input: hsl(222 30% 14%);
-    --ring: hsl(174 72% 50%);
-    --shadow-glow: 0 0 40px hsl(185 70% 50% / 0.15);
+    --border: hsl(20 10% 16%);
+    --input: hsl(20 10% 13%);
+    --ring: hsl(38 95% 58%);
+    --shadow-glow: 0 0 40px hsl(38 95% 58% / 0.15);
   }
 
-  /* LIGHT THEME OVERRIDES */
   .light {
-    --background: hsl(210 40% 98%);
-    --foreground: hsl(222 47% 6%);
+    --background: hsl(38 30% 97%);
+    --foreground: hsl(20 20% 8%);
     --card: hsl(0 0% 100%);
-    --card-foreground: hsl(222 47% 6%);
+    --card-foreground: hsl(20 20% 8%);
     --popover: hsl(0 0% 100%);
-    --popover-foreground: hsl(222 47% 6%);
-    --primary: hsl(174 72% 45%); /* Slightly darker for contrast on light */
-    --primary-foreground: hsl(210 40% 98%);
-    --secondary: hsl(210 20% 90%);
-    --secondary-foreground: hsl(222 47% 10%);
-    --muted: hsl(210 20% 94%);
-    --muted-foreground: hsl(215 16% 47%);
-    --accent: hsl(174 72% 40%);
-    --accent-foreground: hsl(210 40% 98%);
+    --popover-foreground: hsl(20 20% 8%);
+    --primary: hsl(38 90% 48%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(38 20% 90%);
+    --secondary-foreground: hsl(20 20% 12%);
+    --muted: hsl(38 15% 93%);
+    --muted-foreground: hsl(20 10% 45%);
+    --accent: hsl(22 85% 45%);
+    --accent-foreground: hsl(0 0% 100%);
     --destructive: hsl(0 84% 60%);
-    --border: hsl(214 32% 91%);
-    --input: hsl(214 32% 91%);
-    --ring: hsl(174 72% 45%);
+    --border: hsl(38 20% 87%);
+    --input: hsl(38 20% 87%);
+    --ring: hsl(38 90% 48%);
     --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.08);
-    --shadow-glow: 0 0 40px hsl(185 70% 50% / 0.15);
+    --shadow-glow: 0 0 40px hsl(38 90% 50% / 0.15);
   }
 
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
+
   body {
-    @apply bg-background text-foreground antialiased transition-colors duration-300;
-    font-family: 'Space Grotesk', system-ui, sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: "Space Grotesk", system-ui, sans-serif;
   }
 
-  code, pre {
-    font-family: 'JetBrains Mono', monospace;
-  }
+  code, pre { font-family: "JetBrains Mono", monospace; }
 }
 
 @layer components {
   .nav-link {
     @apply relative text-muted-foreground font-medium text-sm transition-colors duration-300;
   }
-
-  .nav-link:hover {
-    @apply text-primary;
-  }
-
+  .nav-link:hover { @apply text-primary; }
   .nav-link::after {
     content: "";
     @apply absolute left-0 -bottom-1 h-[2px] w-0 rounded-full transition-all duration-300;
     background: var(--gradient-primary);
   }
-
-  .nav-link:hover::after {
-    width: 100%;
-  }
-
-  .nav-link-active {
-    @apply text-primary;
-  }
-
-  .nav-link-active::after {
-    width: 100%;
-  }
+  .nav-link:hover::after, .nav-link-active::after { width: 100%; }
+  .nav-link-active { @apply text-primary; }
 
   .glass-card {
     @apply bg-card/60 backdrop-blur-xl border border-border/50 rounded-xl;
     box-shadow: var(--shadow-card);
+  }
+  .glass-card-elevated {
+    @apply bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl;
+    box-shadow: var(--shadow-elevated);
   }
 
   .gradient-text {
@@ -144,45 +119,38 @@
     background: var(--gradient-primary);
     color: var(--color-primary-foreground);
   }
-
   .btn-primary:hover {
     box-shadow: var(--shadow-glow);
     @apply -translate-y-0.5;
   }
 
-
-  .glass-card {
-    @apply bg-card/60 backdrop-blur-xl border border-border/50 rounded-xl;
-    box-shadow: var(--shadow-card);
+  .dot-grid {
+    background-image: radial-gradient(circle, hsl(38 95% 58% / 0.12) 1px, transparent 1px);
+    background-size: 32px 32px;
   }
 
-  .glass-card-elevated {
-    @apply bg-card/80 backdrop-blur-xl border border-border/50 rounded-2xl;
-    box-shadow: var(--shadow-elevated);
-  }
-
- 
-
-  /* Animations */
-  .page-transition {
-    animation: fadeSlideIn 0.4s ease-out forwards;
-  }
+  .page-transition { animation: fadeSlideIn 0.4s ease-out forwards; }
 
   @keyframes fadeSlideIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 1; box-shadow: 0 0 4px hsl(38 95% 58% / 0.6); }
+    50% { opacity: 0.6; box-shadow: 0 0 10px hsl(38 95% 58% / 0.9); }
+  }
+  .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
   .shimmer {
     @apply relative overflow-hidden;
     &::before {
-      content: '';
+      content: "";
       @apply absolute inset-0;
-      background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent);
+      background: linear-gradient(90deg, transparent, hsl(38 95% 58% / 0.08), transparent);
       animation: shimmer 2s infinite;
     }
   }
-
   @keyframes shimmer {
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
@@ -193,24 +161,10 @@
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    &::-webkit-scrollbar { display: none; }
   }
-
-  .section-padding {
-    @apply px-6 md:px-12 lg:px-24 py-14 md:py-26;
-  }
-
-  .glow-border {
-    box-shadow: var(--shadow-glow), inset 0 0 0 1px hsl(var(--primary) / 0.1);
-  }
-
-  .glow-primary {
-    box-shadow: 0 0 20px hsl(174 72% 52% / 0.15), 0 0 60px hsl(174 72% 52% / 0.05);
-  }
-
-  .glow-primary-intense {
-    box-shadow: 0 0 30px hsl(174 72% 52% / 0.3), 0 0 80px hsl(174 72% 52% / 0.1);
-  }
+  .section-padding { @apply px-6 md:px-12 lg:px-24 py-14 md:py-24; }
+  .glow-border { box-shadow: var(--shadow-glow), inset 0 0 0 1px hsl(38 95% 58% / 0.1); }
+  .glow-primary { box-shadow: 0 0 20px hsl(38 95% 58% / 0.15), 0 0 60px hsl(38 95% 58% / 0.05); }
+  .glow-primary-intense { box-shadow: 0 0 30px hsl(38 95% 58% / 0.3), 0 0 80px hsl(38 95% 58% / 0.1); }
 }

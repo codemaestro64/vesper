@@ -31,7 +31,7 @@ export default function TemplatesShowcase() {
   const [hoveredType, setHoveredType] = useState<string | null>(null)
 
   return (
-    <section ref={ref} className="relative py-28 px-4 sm:px-6 overflow-hidden">
+    <section id="templates" ref={ref} className="relative py-28 px-4 sm:px-6 overflow-hidden">
       {/* background radial */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute bottom-0 right-0 w-[500px] h-[400px] bg-primary/3 rounded-full blur-[100px]" />

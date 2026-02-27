@@ -118,7 +118,7 @@ export default function CompareSection() {
   const [showAfter, setShowAfter] = useState(false)
 
   return (
-    <section ref={ref} className="relative py-28 px-4 sm:px-6 overflow-hidden">
+    <section id="compare" ref={ref} className="relative py-28 px-4 sm:px-6 overflow-hidden">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
 
       <div className="max-w-6xl mx-auto">

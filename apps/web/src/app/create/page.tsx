@@ -1,6 +1,9 @@
 'use client'
 
 import { useMemo, useState, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
+import { ChevronRight, FileCode, CheckCircle2 } from 'lucide-react'
 import type { ContractTemplate } from '@vesper/types'
 import ConfigSection from '@/components/ConfigSection'
 import AnimatedReveal from '@/components/AnimatedReveal'
@@ -49,17 +52,84 @@ export default function CreatePage() {
     [config]
   )
 
+  const isReady = !!config
   const downloadFilename = contractName.trim()
     ? `${contractName.trim().replace(/\s+/g, '')}.sol`
     : 'contract.sol'
 
+  const featureCount = selectedFeatures.length
+
   return (
-    <div className="min-h-screen pt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+    <div className="min-h-screen pt-16 flex flex-col">
+
+      {/* ── Page header ── */}
+      <div className="border-b border-border/50 bg-background/80 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
+
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3 font-mono" aria-label="Breadcrumb">
+            <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+            <ChevronRight size={12} className="opacity-40" />
+            <span className="text-foreground/70">Create Contract</span>
+          </nav>
+
+          <div className="flex items-start justify-between gap-6 flex-wrap">
+            <div>
+              <h1 className="text-xl font-bold tracking-tight flex items-center gap-2.5">
+                <FileCode size={20} className="text-primary" />
+                Contract Builder
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Configure your contract below — the generated Solidity updates live on the right.
+              </p>
+            </div>
+
+            {/* Status pills */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <AnimatePresence>
+                {selectedTemplate && (
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-full glass-card border-primary/20 text-foreground/70"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    {selectedTemplate.label}
+                  </motion.span>
+                )}
+                {featureCount > 0 && (
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-full glass-card border-border/40 text-muted-foreground"
+                  >
+                    {featureCount} feature{featureCount !== 1 ? 's' : ''}
+                  </motion.span>
+                )}
+                {isReady && (
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="inline-flex items-center gap-1.5 text-xs font-mono px-3 py-1.5 rounded-full bg-primary/10 border border-primary/25 text-primary"
+                  >
+                    <CheckCircle2 size={11} />
+                    Ready to download
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Builder ── */}
+      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-4 items-start">
 
           {/* Left: Configuration panel */}
-          <div className="glass-card p-5 space-y-6 overflow-auto max-h-[calc(100vh-100px)] scrollbar-hide sticky top-20">
+          <div className="glass-card p-5 space-y-6 overflow-auto max-h-[calc(100vh-220px)] scrollbar-hide sticky top-20">
 
             <ConfigSection title="Choose Template" step={1}>
               <TemplateSelector
@@ -124,7 +194,7 @@ export default function CreatePage() {
             </AnimatedReveal>
           </div>
 
-          {/* ── Right: Code preview ── */}
+          {/* Right: Code preview */}
           <div className="sticky top-20">
             <CodeViewer code={code} filename={downloadFilename} />
           </div>

@@ -96,7 +96,7 @@ export default function HowItWorks() {
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
-    <section ref={ref} className="relative py-28 px-4 sm:px-6 overflow-hidden">
+    <section id="how-it-works" ref={ref} className="relative py-28 px-4 sm:px-6 overflow-hidden">
       {/* Subtle divider glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
 

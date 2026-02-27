@@ -54,7 +54,7 @@ export default function FeaturesSection() {
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
-    <section ref={ref} className="relative py-28 px-4 sm:px-6 overflow-hidden">
+    <section id="features" ref={ref} className="relative py-28 px-4 sm:px-6 overflow-hidden">
       {/* Top divider */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
 

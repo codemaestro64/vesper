@@ -1,38 +1,30 @@
 'use client'
 
-import { forwardRef, ReactNode } from 'react'
-import Link, { LinkProps } from 'next/link'
+import type { ReactNode } from 'react'
+import Link, { type LinkProps } from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
-interface NavLinkProps extends Omit<LinkProps, 'className'> {
+interface NavLinkProps extends LinkProps {
   children: ReactNode
   className?: string
   activeClassName?: string
 }
 
-const NavLink = forwardRef<HTMLAnchorElement, NavLinkProps>(
-  ({ href, children, className, activeClassName, ...props }, ref) => {
-    const pathname = usePathname()
+export function NavLink({
+  href,
+  children,
+  className,
+  activeClassName,
+  ...props
+}: NavLinkProps) {
+  const pathname = usePathname()
+  const isActive =
+    typeof href === 'string' ? pathname === href : pathname === href.pathname
 
-    const isActive =
-      typeof href === 'string'
-        ? pathname === href
-        : pathname === href.pathname
-
-    return (
-      <Link
-        ref={ref}
-        href={href}
-        className={cn(className, isActive && activeClassName)}
-        {...props}
-      > 
-        {children}
-      </Link>
-    )
-  }
-)
-
-NavLink.displayName = 'NavLink'
-
-export { NavLink }
+  return (
+    <Link href={href} className={cn(className, isActive && activeClassName)} {...props}>
+      {children}
+    </Link>
+  )
+}

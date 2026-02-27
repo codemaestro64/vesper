@@ -3,7 +3,7 @@ import ConfigSectionTitle from '@/components/ConfigSectionTitle'
 
 interface ConfigSectionProps {
   title: string
-  step: string | number
+  step: number
   children: ReactNode
 }
 
