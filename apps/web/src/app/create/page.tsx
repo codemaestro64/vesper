@@ -1,155 +1,136 @@
 'use client'
 
-import { useMemo, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import ConfigSectionTitle from "@/components/ConfigSectionTitle"
-import { ContractTemplate } from "@vesper/types"
-import TemplateSelector from "@/components/TemplateSelector"
-import FeaturesSelector from "@/components/FeatureSelector"
-import { Input } from "@/components/ui/input"
-import CodeViewer from "@/components/CodeViewer"
-import { generateContractCode } from "@/lib/contract-generator"
+import { useMemo, useState, useCallback } from 'react'
+import type { ContractTemplate } from '@vesper/types'
+import ConfigSection from '@/components/ConfigSection'
+import AnimatedReveal from '@/components/AnimatedReveal'
+import TemplateSelector from '@/components/TemplateSelector'
+import FeatureSelector from '@/components/FeatureSelector'
+import { Input } from '@/components/ui/input'
+import CodeViewer from '@/components/CodeViewer'
+import { generateContractCode } from '@/lib/contract-generator'
 
-const CreatePage = () => {
+const PLACEHOLDER_CODE = '// Select a template and configure your contract'
+
+export default function CreatePage() {
   const [selectedTemplate, setSelectedTemplate] = useState<ContractTemplate | null>(null)
-  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
-  const [contractName, setContractName] = useState("")
-  const [contractSymbol, setContractSymbol] = useState("")
-  const [contractDecimals, setContractDecimals] = useState<number>(18)
-  const [contractInitialSupply, setContractInitialSupply] = useState<number>(0)
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([])
+  const [contractName, setContractName] = useState('')
+  const [contractSymbol, setContractSymbol] = useState('')
+  const [contractDecimals, setContractDecimals] = useState(18)
+  const [contractInitialSupply, setContractInitialSupply] = useState(0)
+
+  const handleSelectTemplate = useCallback((template: ContractTemplate) => {
+    setSelectedTemplate(template)
+    setSelectedFeatures(template.defaultFeatures ?? [])
+  }, [])
+
+  const handleToggleFeature = useCallback((featureId: string) => {
+    setSelectedFeatures((prev) =>
+      prev.includes(featureId)
+        ? prev.filter((f) => f !== featureId)
+        : [...prev, featureId]
+    )
+  }, [])
 
   const config = useMemo(() => {
-    if (!selectedTemplate || !contractName) {
-      return null
-    }
-    
+    if (!selectedTemplate || !contractName.trim()) return null
     return {
       type: selectedTemplate.type,
-      name: contractName,
-      symbol: contractSymbol,
+      name: contractName.trim(),
+      symbol: contractSymbol.trim() || undefined,
       description: selectedTemplate.description,
-      features: selectedFeatures
+      features: selectedFeatures,
     }
   }, [selectedTemplate, selectedFeatures, contractName, contractSymbol])
 
-  const code = useMemo(() => {
-    if (!config) return '// Select a template and configure your contract';
-    return generateContractCode(config)
-  }, [config])
+  const code = useMemo(
+    () => (config ? generateContractCode(config) : PLACEHOLDER_CODE),
+    [config]
+  )
 
-  const handleToggleSelectedFeature = (featureID: string) => {
-    setSelectedFeatures(prev =>
-      prev.includes(featureID) 
-        ? prev.filter(f => f !== featureID)
-        : [...prev, featureID]
-    )
-  }
+  const downloadFilename = contractName.trim()
+    ? `${contractName.trim().replace(/\s+/g, '')}.sol`
+    : 'contract.sol'
 
   return (
     <div className="min-h-screen pt-16">
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-[40%_60%] gap-4">
-          {/* LEFT: Configuration Column */}
-          <div className="space-y-6 glass-card p-4 overflow-auto">
-            {/* Choose template section */}
-            <div>
-              <ConfigSectionTitle 
-                title="Choose template"
-                preTitle="1"
-              />
-             
-              <div className="glass-cards rounded-xl p-4 space-y-3">
-                <TemplateSelector 
-                  selected={selectedTemplate} 
-                  onSelect={(type) => setSelectedTemplate(type)}
-                />
-              </div>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-4 items-start">
 
-            {/* Contract Info Section */}
-            <AnimatePresence mode="wait">
-              {selectedTemplate && (
-                <motion.div 
-                  key="contract-info"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="space-y-6"
-                >
-                  <div>
-                    <ConfigSectionTitle
-                      title="Contract Info"
-                      preTitle="2"
+          {/* Left: Configuration panel */}
+          <div className="glass-card p-5 space-y-6 overflow-auto max-h-[calc(100vh-100px)] scrollbar-hide sticky top-20">
+
+            <ConfigSection title="Choose Template" step={1}>
+              <TemplateSelector
+                selected={selectedTemplate}
+                onSelect={handleSelectTemplate}
+              />
+            </ConfigSection>
+
+            <AnimatedReveal show={!!selectedTemplate} id="contract-config" className="space-y-6">
+
+              <ConfigSection title="Contract Info" step={2}>
+                <div className="glass-card p-4 space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Input
+                      label="Contract Name"
+                      placeholder="MyToken"
+                      value={contractName}
+                      onChange={(e) => setContractName(e.target.value)}
                     />
-                    <div className="glass-card rounded-xl p-4 space-y-3">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Input 
-                          label="Contract Name" 
-                          placeholder="MyToken" 
-                          value={contractName}
-                          onChange={(e) => setContractName(e.target.value)}
-                        />
-                        <Input 
-                          label="Symbol" 
-                          placeholder="MTK"
-                          value={contractSymbol}
-                          onChange={(e) => setContractSymbol(e.target.value)} 
-                        />
-                      </div>
-                      {selectedTemplate.type === 'erc20' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <Input 
-                            label="Initial Supply" 
-                            placeholder="1000000" 
-                            value={contractInitialSupply}
-                            onChange={(e) => setContractInitialSupply(Number(e.target.value))}
-                          />
-                          <Input 
-                            label="Decimals" 
-                            placeholder="18" 
-                            value={contractDecimals}
-                            onChange={(e) => setContractDecimals(Number(e.target.value))}
-                          />
-                        </div>
-                      )}
-                    </div>
+                    <Input
+                      label="Symbol"
+                      placeholder="MTK"
+                      value={contractSymbol}
+                      onChange={(e) => setContractSymbol(e.target.value)}
+                    />
                   </div>
 
-                  {/* Contract Features Section */}
-                  {selectedTemplate.availableFeatures && (
-                    <div>
-                      <ConfigSectionTitle 
-                        title="Contract Features"
-                        preTitle="3"
+                  {selectedTemplate?.type === 'erc20' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <Input
+                        label="Initial Supply"
+                        type="number"
+                        placeholder="1000000"
+                        min={0}
+                        value={contractInitialSupply}
+                        onChange={(e) => setContractInitialSupply(Number(e.target.value))}
                       />
-                      <FeaturesSelector 
-                        selectedFeatures={selectedFeatures}
-                        availableFeatures={selectedTemplate.availableFeatures}
-                        onToggleFeature={handleToggleSelectedFeature}
+                      <Input
+                        label="Decimals"
+                        type="number"
+                        placeholder="18"
+                        min={0}
+                        max={18}
+                        value={contractDecimals}
+                        onChange={(e) => setContractDecimals(Number(e.target.value))}
                       />
                     </div>
                   )}
-                </motion.div>
+                </div>
+              </ConfigSection>
+
+              {selectedTemplate && selectedTemplate.availableFeatures.length > 0 && (
+                <ConfigSection title="Contract Features" step={3}>
+                  <FeatureSelector
+                    selectedFeatures={selectedFeatures}
+                    availableFeatures={selectedTemplate.availableFeatures}
+                    onToggleFeature={handleToggleFeature}
+                  />
+                </ConfigSection>
               )}
-            </AnimatePresence>
-            <div>
-              
-            </div>
+
+            </AnimatedReveal>
           </div>
 
-          {/* RIGHT: Code Preview */}
-          <div className="">
-            {/* Toolbar */}
-            <div className="mb-4"></div>
-            {/* Code Viewer */}
-            <div>
-              <CodeViewer code={code} />
-            </div>
+          {/* ── Right: Code preview ── */}
+          <div className="sticky top-20">
+            <CodeViewer code={code} filename={downloadFilename} />
           </div>
+
         </div>
       </div>
     </div>
   )
 }
-
-export default CreatePage
