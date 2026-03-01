@@ -5,8 +5,17 @@ import { users, type User } from '@vesper/database';
 import { FindOrCreateDto } from './dto/user.dto';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(@Inject(DRIZZLE) private readonly db: DrizzleDB) {}
+
+  async findById(id: number): Promise<User | null> {
+    const result = await this.db
+      .select()
+      .from(users)
+      .where(eq(users.id, id))
+      .limit(1);
+    return result[0] ?? null;
+  }
 
   async findByWalletAddress(walletAddress: string): Promise<User | null> {
     const result = await this.db
@@ -26,7 +35,7 @@ export class UserService {
       .insert(users)
       .values({
         walletAddress: address,
-        chainId: dto.chainID,
+        chainId: dto.chainId,
         createdAt: now,
         lastLoginAt: now,
       })
@@ -34,7 +43,7 @@ export class UserService {
         target: users.walletAddress,
         set: {
           lastLoginAt: now,
-          chainId: dto.chainID,
+          chainId: dto.chainId,
         },
       })
       .returning();

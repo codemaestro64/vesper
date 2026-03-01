@@ -2,13 +2,17 @@
 // Core Types — Vesper Contract Generation Engine
 // ─────────────────────────────────────────────────────────────────────────────
 
+export const ContractTypes = {
+  ERC20: 'erc20',
+  ERC721: 'erc721',
+  ERC1155: 'erc1155',
+  STAKING: 'staking',
+  GOVERNANCE: 'governance',
+  MULTISIG: 'multisig',
+} as const
+
 export type ContractType =
-  | 'erc20'
-  | 'erc721'
-  | 'erc1155'
-  | 'staking'
-  | 'governance'
-  | 'multisig'
+  typeof ContractTypes[keyof typeof ContractTypes]
 
 export type AccessControl = 'ownable' | 'roles' | 'none'
 export type UpgradePattern = 'none' | 'transparent' | 'uups'
