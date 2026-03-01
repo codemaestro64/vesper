@@ -1,7 +1,10 @@
 packages:
-  - "apps/*"
-  - "packages/*"
-  
-ignoredBuiltDependencies:
+  - apps/*
+  - packages/*
+
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - '@scarf/scarf'
+  - esbuild
   - sharp
   - unrs-resolver
