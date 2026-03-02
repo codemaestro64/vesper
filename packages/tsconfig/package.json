@@ -1,5 +1,0 @@
-{
-  "name": "@vesper/tsconfig",
-  "version": "0.0.1",
-  "files": ["base.json", "nextjs.json", "nestjs.json"]
-}
