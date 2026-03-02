@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
+import { AllExceptionsFilter } from './filters.module';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -31,7 +32,9 @@ async function bootstrap() {
     }),
   );
 
-  // 6. CORS Configuration
+  app.useGlobalFilters(new AllExceptionsFilter());
+
+  // CORS Configuration
   const origin = configService.get<string>(
     'CORS_ORIGIN',
     'http://localhost:5173',

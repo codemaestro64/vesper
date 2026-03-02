@@ -53,14 +53,12 @@ export class ContractsService {
   ): Promise<Contract> {
     await this.findOne(id, userId); // ownership check
 
-    const now = new Date().toISOString();
-
     await this.db
       .update(contracts)
       .set({
         abi: dto.abi,
         address: dto.contractAddress,
-        updatedAt: now,
+        updatedAt: new Date().toISOString(),
       })
       .where(and(eq(contracts.id, id), eq(contracts.ownerId, userId)));
 

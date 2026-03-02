@@ -6,7 +6,7 @@ import { configSchema } from '../config/schema';
 import { DatabaseHealthIndicator } from './database.health';
 
 @ApiTags('Health')
-@Controller('health')
+@Controller('health') // Base Path /health
 export class HealthController {
   constructor(
     private readonly health: HealthCheckService,
@@ -17,13 +17,13 @@ export class HealthController {
     return this.health.check([() => this.database.isHealthy('health')]);
   }
 
-  @Get()
+  @Get() // GET /
   @HealthCheck()
   check() {
     return this.run();
   }
 
-  @Get('environment')
+  @Get('environment') // GET /environment
   environment() {
     if (process.env.NODE_ENV === 'production') throw new NotFoundException();
     return configSchema.parse(process.env);

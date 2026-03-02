@@ -5,11 +5,11 @@ import {
   Body,
   Query,
   UseGuards,
-  Request,
   HttpCode,
   HttpStatus,
   Ip,
   Headers,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
@@ -17,7 +17,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { GetNonceDto, VerifySignatureDto } from './dto/verify-signature.dto';
 import { GetUser } from './decorators/user.decorator';
 
-@Controller('auth')
+@Controller('auth') // Base Path /auth
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -26,7 +26,7 @@ export class AuthController {
    * Rate limited: 10/min per IP.
    */
   @Throttle({ default: { limit: 10, ttl: 60000 } })
-  @Get('nonce')
+  @Get('nonce') // GET /auth/nonce
   getNonce(@Query() dto: GetNonceDto, @Ip() ip: string) {
     return this.authService.generateNonce(dto.address, ip);
   }
@@ -37,7 +37,7 @@ export class AuthController {
    */
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
-  @Post('verify')
+  @Post('verify') // POST /auth/verify
   verify(
     @Body() dto: VerifySignatureDto,
     @Ip() ip: string,
@@ -52,8 +52,8 @@ export class AuthController {
    */
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Post('logout')
-  logout(@GetUser('userId') userId: number, @Ip() ip: string) {
+  @Post('logout') // POST /auth/logout
+  logout(@GetUser('id', ParseIntPipe) userId: number, @Ip() ip: string) {
     return this.authService.logout(userId, ip);
   }
 }

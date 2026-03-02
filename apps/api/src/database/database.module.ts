@@ -16,7 +16,7 @@ export type DrizzleDB = ReturnType<typeof drizzle<typeof schema>>;
       useFactory: (configService: ConfigService) => {
         const dbURL = configService.get<string>(
           'DATABASE_URL',
-          'file:./database.sql',
+          'file:./database.sqlite',
         );
         const client = createClient({ url: dbURL });
         return drizzle(client, { schema });

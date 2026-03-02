@@ -2,33 +2,46 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Body,
   Param,
   UseGuards,
-  Request,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ContractsService } from './contracts.service';
-import { CreateContractDto } from './dto/contract.dto';
+import { CreateContractDto, UpdateContractDto } from './dto/contract.dto';
 import { GetUser } from '../auth/decorators/user.decorator';
 
 @UseGuards(JwtAuthGuard)
-@Controller('contracts')
+@Controller('contracts') // Base Path /contracts
 export class ContractsController {
   constructor(private readonly contractsService: ContractsService) {}
 
-  @Get('/me/contracts')
-  findAll(@GetUser('userId') userId: number) {
+  @Get('me') // GET /contracts/me
+  findAll(@GetUser('id') userId: number) {
     return this.contractsService.findAllByUser(userId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number, @GetUser('userId') userId: number) {
+  @Get(':id') // GET /contracts/:id
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser('id') userId: number,
+  ) {
     return this.contractsService.findOne(id, userId);
   }
 
-  @Post()
-  create(@Body() dto: CreateContractDto, @GetUser('userId') userId: number) {
+  @Post() // POST /contracts
+  create(@GetUser('id') userId: number, @Body() dto: CreateContractDto) {
     return this.contractsService.create(userId, dto);
+  }
+
+  @Patch(':id') // PATCH /contracts/:id
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser('id') userId: number,
+    @Body() dto: UpdateContractDto,
+  ) {
+    return this.contractsService.update(id, userId, dto);
   }
 }
