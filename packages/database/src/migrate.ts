@@ -1,6 +1,6 @@
 import { migrate } from 'drizzle-orm/libsql/migrator';
 import { type LibSQLDatabase } from 'drizzle-orm/libsql';
-import * as schema from './schema';
+import * as schema from "./schema";
 import path from 'path';
 
 
