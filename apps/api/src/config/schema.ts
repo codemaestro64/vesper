@@ -36,9 +36,8 @@ export const configSchema = z.object({
   }),
 
   // Database
-  // Changed from postgresql:// to allow SQLite file paths
   DATABASE_URL: z.string(),
-  MIGRATIONS_FOLDER: z.string(),
+  DATABASE_AUTH_TOKEN: z.string().min(1).optional(),
 });
 
 export type Config = z.infer<typeof configSchema>;

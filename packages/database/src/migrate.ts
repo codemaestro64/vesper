@@ -3,6 +3,7 @@ import { type LibSQLDatabase } from 'drizzle-orm/libsql';
 import * as schema from './schema';
 import path from 'path';
 
+
 const migrationsFolder = path.resolve(
   __dirname,
   process.env.NODE_ENV === 'production'
