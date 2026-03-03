@@ -1,67 +1,79 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { eq, and } from 'drizzle-orm';
 import { type DrizzleDB, DRIZZLE } from '../database/database.module';
-import { contracts, Contract } from '@vesper/database';
-import { CreateContractDto, UpdateContractDto } from './dto/contract.dto';
+import { contracts } from '@vesper/database';
+import { CreateContractDto, UpdateContractDto, ContractResponse } from './dto';
+import { toContractResponse } from './contracts.mapper';
 
 @Injectable()
 export class ContractsService {
   constructor(@Inject(DRIZZLE) private readonly db: DrizzleDB) {}
 
-  findAllByUser(userId: number): Promise<Contract[]> {
-    return this.db
+  async findAllByUser(userId: number): Promise<ContractResponse[]> {
+    const result = await this.db
       .select()
       .from(contracts)
       .where(eq(contracts.ownerId, userId));
+
+    return result.map(toContractResponse);
   }
 
-  async findOne(id: number, userId: number): Promise<Contract> {
-    const rows = await this.db
+  async findOne(id: number, userId: number): Promise<ContractResponse> {
+    const contract = await this.db
       .select()
       .from(contracts)
       .where(and(eq(contracts.id, id), eq(contracts.ownerId, userId)))
-      .limit(1);
+      .get();
 
-    if (!rows.length) throw new NotFoundException(`Contract ${id} not found`);
-    return rows[0];
+    if (!contract) throw new NotFoundException(`Contract ${id} not found`);
+    return toContractResponse(contract);
   }
 
-  async create(userId: number, dto: CreateContractDto): Promise<Contract> {
+  async create(
+    userId: number,
+    dto: CreateContractDto,
+  ): Promise<ContractResponse> {
     const now = new Date().toISOString();
 
-    const res = await this.db.insert(contracts).values({
-      ownerId: userId,
-      contractType: dto.contractType,
-      name: dto.name,
-      symbol: dto.symbol ?? null,
-      initialSupply: dto.initialSupply ?? null,
-      decimals: dto.decimals ?? null,
-      features: dto.features ?? [],
-      description: dto.description ?? '',
-      network: dto.network,
-      status: 'draft',
-      createdAt: now,
-    });
+    const [contract] = await this.db
+      .insert(contracts)
+      .values({
+        ownerId: userId,
+        contractType: dto.contractType,
+        name: dto.name,
+        symbol: dto.symbol ?? null,
+        initialSupply: dto.initialSupply ?? null,
+        decimals: dto.decimals ?? null,
+        features: dto.features ?? [],
+        description: dto.description ?? '',
+        network: dto.network,
+        status: 'draft',
+        createdAt: now,
+      })
+      .returning();
 
-    return this.findOne(Number(res.lastInsertRowid), userId);
+    return toContractResponse(contract);
   }
 
   async update(
     id: number,
     userId: number,
     dto: UpdateContractDto,
-  ): Promise<Contract> {
-    await this.findOne(id, userId); // ownership check
-
-    await this.db
+  ): Promise<ContractResponse> {
+    const [contract] = await this.db
       .update(contracts)
       .set({
-        abi: dto.abi,
-        address: dto.contractAddress,
+        ...(dto.contractAddress !== undefined && {
+          address: dto.contractAddress,
+        }),
+        ...(dto.abi !== undefined && { abi: dto.abi }),
+        ...(dto.status !== undefined && { status: dto.status }),
         updatedAt: new Date().toISOString(),
       })
-      .where(and(eq(contracts.id, id), eq(contracts.ownerId, userId)));
+      .where(and(eq(contracts.id, id), eq(contracts.ownerId, userId)))
+      .returning();
 
-    return this.findOne(id, userId);
+    if (!contract) throw new NotFoundException(`Contract ${id} not found`);
+    return toContractResponse(contract);
   }
 }

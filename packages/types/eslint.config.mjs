@@ -1,7 +1,7 @@
 import base from '@vesper/eslint-config/base';
-import { defineConfig } from 'typescript-eslint';
+import tseslint from 'typescript-eslint';
 
-export default defineConfig(
+export default tseslint.config(
   ...base,
   {
     languageOptions: {

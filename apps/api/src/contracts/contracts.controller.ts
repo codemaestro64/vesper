@@ -10,7 +10,11 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ContractsService } from './contracts.service';
-import { CreateContractDto, UpdateContractDto } from './dto/contract.dto';
+import {
+  ContractResponse,
+  CreateContractDto,
+  UpdateContractDto,
+} from './dto/contract.dto';
 import { GetUser } from '../auth/decorators/user.decorator';
 
 @UseGuards(JwtAuthGuard)
@@ -19,7 +23,7 @@ export class ContractsController {
   constructor(private readonly contractsService: ContractsService) {}
 
   @Get('me') // GET /contracts/me
-  findAll(@GetUser('id') userId: number) {
+  findAll(@GetUser('id') userId: number): Promise<ContractResponse[]> {
     return this.contractsService.findAllByUser(userId);
   }
 
@@ -27,12 +31,15 @@ export class ContractsController {
   findOne(
     @Param('id', ParseIntPipe) id: number,
     @GetUser('id') userId: number,
-  ) {
+  ): Promise<ContractResponse> {
     return this.contractsService.findOne(id, userId);
   }
 
   @Post() // POST /contracts
-  create(@GetUser('id') userId: number, @Body() dto: CreateContractDto) {
+  create(
+    @GetUser('id') userId: number,
+    @Body() dto: CreateContractDto,
+  ): Promise<ContractResponse> {
     return this.contractsService.create(userId, dto);
   }
 
@@ -41,7 +48,7 @@ export class ContractsController {
     @Param('id', ParseIntPipe) id: number,
     @GetUser('id') userId: number,
     @Body() dto: UpdateContractDto,
-  ) {
+  ): Promise<ContractResponse> {
     return this.contractsService.update(id, userId, dto);
   }
 }

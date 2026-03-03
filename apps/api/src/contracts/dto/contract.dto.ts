@@ -14,6 +14,7 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { ContractTypes, type ContractType } from '@vesper/types';
+import type { Abi } from 'abitype';
 
 export class CreateContractDto {
   @ApiProperty({ enum: ContractTypes })
@@ -70,38 +71,32 @@ export class CreateContractDto {
 
 export class UpdateContractDto {
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(200)
-  name?: string;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(2000)
-  description?: string;
-
-  @IsOptional()
   @IsEthereumAddress()
   contractAddress?: string;
 
   @IsOptional()
   @IsString()
-  abi?: string;
+  abi?: Abi;
 
   @IsOptional()
-  @IsString()
-  bytecode?: string;
+  @IsEnum(['draft', 'deployed'])
+  status?: 'draft' | 'deployed';
+}
 
-  @IsOptional()
-  @IsString()
-  network?: string;
-
-  @IsOptional()
-  @IsEnum(['draft', 'deployed', 'archived'])
-  status?: 'draft' | 'deployed' | 'archived';
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  tags?: string[];
+export interface ContractResponse {
+  id: number;
+  name: string;
+  contractType: ContractType;
+  chainId: number;
+  symbol: string | null;
+  initialSupply: number | null;
+  decimals: number | null;
+  features: string[] | null;
+  description: string | null;
+  address: string | null;
+  abi: Abi | null;
+  network: string | null;
+  status: 'draft' | 'deployed';
+  createdAt: string;
+  updatedAt: string | null;
 }

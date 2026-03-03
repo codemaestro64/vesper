@@ -9,12 +9,16 @@ import {
   HttpStatus,
   Ip,
   Headers,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { GetNonceDto, VerifySignatureDto } from './dto/verify-signature.dto';
+import {
+  GetNonceDto,
+  NonceResponse,
+  VerifySignatureDto,
+  VerifySignatureResponse,
+} from './dto';
 import { GetUser } from './decorators/user.decorator';
 
 @Controller('auth') // Base Path /auth
@@ -27,7 +31,10 @@ export class AuthController {
    */
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @Get('nonce') // GET /auth/nonce
-  getNonce(@Query() dto: GetNonceDto, @Ip() ip: string) {
+  getNonce(
+    @Query() dto: GetNonceDto,
+    @Ip() ip: string,
+  ): Promise<NonceResponse> {
     return this.authService.generateNonce(dto.address, ip);
   }
 
@@ -42,18 +49,21 @@ export class AuthController {
     @Body() dto: VerifySignatureDto,
     @Ip() ip: string,
     @Headers('user-agent') userAgent: string,
-  ) {
+  ): Promise<VerifySignatureResponse> {
     return this.authService.verifySignature(dto, ip, userAgent);
   }
 
   /**
    * Logout
-   * Server logs the event; add a blocklist here if needed.
+   * Server logs the event
    */
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('logout') // POST /auth/logout
-  logout(@GetUser('id', ParseIntPipe) userId: number, @Ip() ip: string) {
-    return this.authService.logout(userId, ip);
+  logout(
+    @GetUser('walletAddress') walletAddress: string,
+    @Ip() ip: string,
+  ): Promise<void> {
+    return this.authService.logout(walletAddress, ip);
   }
 }

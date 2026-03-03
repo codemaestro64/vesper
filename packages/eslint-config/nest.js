@@ -1,11 +1,13 @@
-const base = require('./base');
-const tseslint = require('typescript-eslint');
+import base from "@vesper/eslint-config/base";
+import tseslint from "typescript-eslint";
 
-module.exports = tseslint.config(
-  ...base,
-  {
-    rules: {
-      // nestjs-specific overrides
-    }
-  }
-);
+export default tseslint.config(...base, {
+  languageOptions: {
+    parserOptions: {
+      projectService: true,
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+
+  rules: {},
+});

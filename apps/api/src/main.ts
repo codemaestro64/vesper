@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import { AllExceptionsFilter } from './filters.module';
 import { AppModule } from './app.module';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   const logger = new Logger('Bootstrap');
 
   // Create the app instance

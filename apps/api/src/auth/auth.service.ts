@@ -12,20 +12,15 @@ import { NonceService } from '../nonce/nonce.service';
 import { UsersService } from '../users/users.service';
 import { DRIZZLE, type DrizzleDB } from '../database/database.module';
 import { AuditAction, auditLogs } from '@vesper/database';
-import { VerifySignatureDto } from './dto/verify-signature.dto';
-
-/* -------------------------------------------------------------------------- */
-/*                                   TYPES                                    */
-/* -------------------------------------------------------------------------- */
-
-interface JwtPayload {
-  sub: number;
-  address: string;
-}
+import { JwtPayload } from './strategies/jwt.strategy';
+import {
+  NonceResponse,
+  VerifySignatureDto,
+  VerifySignatureResponse,
+} from './dto';
 
 interface AuditLogInput {
   action: AuditAction;
-  userId?: number;
   walletAddress?: string;
   ipAddress?: string;
   userAgent?: string;
@@ -59,14 +54,13 @@ export class AuthService {
   async generateNonce(
     address: string,
     ipAddress?: string,
-  ): Promise<{ nonce: string; message: string }> {
+  ): Promise<NonceResponse> {
     if (!isAddress(address)) {
       throw new BadRequestException('Invalid Ethereum address');
     }
 
     await this.usersService.findOrCreate({
       walletAddress: address,
-      chainId: 1,
     });
 
     const nonce: string = await this.nonceService.generate(address);
@@ -77,7 +71,6 @@ export class AuthService {
       statement: 'Sign in with your Ethereum wallet.',
       uri: this.siweUri,
       version: '1',
-      chainId: 1,
       nonce,
       issuedAt: new Date().toISOString(),
       expirationTime: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
@@ -99,11 +92,7 @@ export class AuthService {
     dto: VerifySignatureDto,
     ipAddress?: string,
     userAgent?: string,
-  ): Promise<{
-    accessToken: string;
-    expiresIn: string;
-    user: Awaited<ReturnType<UsersService['findOrCreate']>>;
-  }> {
+  ): Promise<VerifySignatureResponse> {
     const fields = await this.verifySiweMessage(dto);
 
     this.validateDomain(fields);
@@ -128,12 +117,10 @@ export class AuthService {
 
     const user = await this.usersService.findOrCreate({
       walletAddress: fields.address,
-      chainId: fields.chainId,
     });
 
     const payload: JwtPayload = {
-      sub: user.id,
-      address: user.walletAddress,
+      sub: user.walletAddress,
     };
 
     const options: JwtSignOptions = {
@@ -144,7 +131,6 @@ export class AuthService {
 
     await this.log({
       action: AuditAction.LOGIN_SUCCESS,
-      userId: user.id,
       walletAddress: user.walletAddress,
       ipAddress,
       userAgent,
@@ -158,10 +144,10 @@ export class AuthService {
     };
   }
 
-  async logout(userId: number, ipAddress?: string): Promise<void> {
+  async logout(walletAddress: string, ipAddress?: string): Promise<void> {
     await this.log({
       action: AuditAction.LOGOUT,
-      userId,
+      walletAddress: walletAddress,
       ipAddress,
     });
   }

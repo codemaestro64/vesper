@@ -1,7 +1,8 @@
 import { sql } from 'drizzle-orm';
 import { sqliteTable, text, index, integer } from 'drizzle-orm/sqlite-core';
-import { ContractTypes } from '@vesper/types';
+import { ContractTypes, ContractType } from '@vesper/types';
 import { users } from './users.schema';
+import { Abi } from 'abitype';
 
 export const contracts = sqliteTable('contracts', {
   id: integer('id').primaryKey({ autoIncrement: true }),
@@ -17,7 +18,10 @@ export const contracts = sqliteTable('contracts', {
       ContractTypes.MULTISIG,
       ContractTypes.STAKING,
     ],
-  }).notNull(),
+  })
+    .notNull()
+    .$type<ContractType>(),
+  chainId: integer('chain_id').notNull().default(1), // TODO ensure correctness
   name: text('title').notNull(),
   symbol: text('symbol'),
   initialSupply: integer('initial_supply'),
@@ -25,9 +29,12 @@ export const contracts = sqliteTable('contracts', {
   features: text('features', { mode: 'json' }).$type<string[]>(),
   description: text('description'),
   address: text('address').unique(),
-  abi: text('abi', { mode: 'json' }),
+  abi: text('abi', { mode: 'json' }).$type<Abi>(),
   network: text('network'),
-  status: text('status').$type<'draft' | 'deployed'>().default('draft'),
+  status: text('status')
+    .$type<'draft' | 'deployed'>()
+    .notNull()
+    .default('draft'),
   createdAt: text('created_at')
     .notNull()
     .default(sql`(datetime('now'))`),

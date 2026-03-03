@@ -24,15 +24,15 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
-    "paths": { 
+    "paths": {
       "@/*": ["./src/*"]
-    },
+    }
   },
-  
-  "include": ["src/**/*.ts"],
+
+  "include": ["src/**/*.ts", "test/**/*.ts"],
   "exclude": ["node_modules", "dist"],
-  "references": [              
+  "references": [
     { "path": "../../packages/database" },
-    { "path": "../../packages/types" },
+    { "path": "../../packages/types" }
   ]
 }

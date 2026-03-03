@@ -1,33 +1,27 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { DRIZZLE, type DrizzleDB } from '../database/database.module';
-import { users, type User } from '@vesper/database';
-import { FindOrCreateDto } from './dto/user.dto';
+import { users } from '@vesper/database';
+import { GetUserDto, UserResponse } from './dto';
 
 @Injectable()
 export class UsersService {
   constructor(@Inject(DRIZZLE) private readonly db: DrizzleDB) {}
 
-  async findById(id: number): Promise<User | null> {
-    const result = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.id, id))
-      .limit(1);
-    return result[0] ?? null;
-  }
-
-  async findByWalletAddress(walletAddress: string): Promise<User | null> {
+  async find(walletAddress: string): Promise<UserResponse> {
     const result = await this.db
       .select()
       .from(users)
       .where(eq(users.walletAddress, walletAddress.toLowerCase()))
       .get();
 
-    return result ?? null;
+    if (!result)
+      throw new NotFoundException(`User (${walletAddress} not found`);
+
+    return result;
   }
 
-  async findOrCreate(dto: FindOrCreateDto): Promise<User> {
+  async findOrCreate(dto: GetUserDto): Promise<UserResponse> {
     const address = dto.walletAddress.toLowerCase();
     const now = new Date().toISOString();
 
@@ -35,7 +29,6 @@ export class UsersService {
       .insert(users)
       .values({
         walletAddress: address,
-        chainId: dto.chainId,
         createdAt: now,
         lastLoginAt: now,
       })
@@ -43,7 +36,6 @@ export class UsersService {
         target: users.walletAddress,
         set: {
           lastLoginAt: now,
-          chainId: dto.chainId,
         },
       })
       .returning();
