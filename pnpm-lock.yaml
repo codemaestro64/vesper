@@ -126,9 +126,6 @@ importers:
       '@types/supertest':
         specifier: ^6.0.2
         version: 6.0.3
-      '@vesper/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
       eslint:
         specifier: ^9.18.0
         version: 9.39.3(jiti@2.6.1)
@@ -180,9 +177,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.90.21
         version: 5.90.21(react@19.2.3)
-      '@vesper/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -263,8 +257,6 @@ importers:
       prettier:
         specifier: ^3.4.2
         version: 3.8.1
-
-  packages/tsconfig: {}
 
   packages/types:
     devDependencies:

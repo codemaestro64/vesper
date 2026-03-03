@@ -8,6 +8,7 @@ import { configSchema } from './schema';
     NestConfigModule.forRoot({
       isGlobal: true,
       expandVariables: true,
+      envFilePath: [`.env.${process.env.NODE_ENV ?? 'development'}`, '.env'],
       validate: (config) => configSchema.parse(config),
     }),
   ],

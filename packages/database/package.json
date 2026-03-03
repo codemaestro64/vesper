@@ -2,18 +2,22 @@
   "name": "@vesper/database",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "type": "commonjs",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js",
+      "require": "./dist/src/index.js"
     }
   },
   "scripts": {
     "build": "tsc -b",
     "dev": "tsc -b --watch",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

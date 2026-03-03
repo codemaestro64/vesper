@@ -4,23 +4,40 @@ import {
   BadRequestException,
   Inject,
 } from '@nestjs/common';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+import { JwtService, type JwtSignOptions } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { SiweMessage } from 'siwe';
+import { SiweMessage, type SiweMessage as SiweMessageData } from 'siwe';
 import { isAddress } from 'ethers';
 import { NonceService } from '../nonce/nonce.service';
 import { UsersService } from '../users/users.service';
 import { DRIZZLE, type DrizzleDB } from '../database/database.module';
-import {
-  AuditAction,
-  type AuditAction as AuditActionType,
-  auditLogs,
-} from '@vesper/database';
+import { AuditAction, auditLogs } from '@vesper/database';
 import { VerifySignatureDto } from './dto/verify-signature.dto';
+
+/* -------------------------------------------------------------------------- */
+/*                                   TYPES                                    */
+/* -------------------------------------------------------------------------- */
+
+interface JwtPayload {
+  sub: number;
+  address: string;
+}
+
+interface AuditLogInput {
+  action: AuditAction;
+  userId?: number;
+  walletAddress?: string;
+  ipAddress?: string;
+  userAgent?: string;
+  metadata?: Record<string, unknown>;
+}
 
 @Injectable()
 export class AuthService {
-  private readonly supportedChainIds: number[];
+  private readonly supportedChainIds: readonly number[];
+  private readonly siweDomain: string;
+  private readonly siweUri: string;
+  private readonly jwtDuration: number;
 
   constructor(
     @Inject(DRIZZLE) private readonly db: DrizzleDB,
@@ -29,38 +46,36 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {
-    const chainIds = this.configService.get<string>(
-      'SUPPORTED_CHAIN_IDS',
-      '1,137,42161,8453',
+    this.supportedChainIds = this.parseChainIds(
+      this.getRequiredConfig('SUPPORTED_CHAIN_IDS'),
     );
-    this.supportedChainIds = chainIds.split(',').map(Number);
+
+    this.siweDomain = this.getRequiredConfig('APP_DOMAIN');
+    this.siweUri = this.getRequiredConfig('APP_URI');
+
+    this.jwtDuration = this.configService.get<number>('JWT_DURATION') ?? 24;
   }
 
-  async generateNonce(address: string, ipAddress?: string) {
-    if (!isAddress(address))
+  async generateNonce(
+    address: string,
+    ipAddress?: string,
+  ): Promise<{ nonce: string; message: string }> {
+    if (!isAddress(address)) {
       throw new BadRequestException('Invalid Ethereum address');
+    }
 
-    // Ensure user row exists before inserting nonce (FK constraint)
     await this.usersService.findOrCreate({
       walletAddress: address,
       chainId: 1,
     });
 
-    const nonce = await this.nonceService.generate(address);
-    const domain = this.configService.get<string>(
-      'APP_DOMAIN',
-      'localhost:3000',
-    );
-    const uri = this.configService.get<string>(
-      'APP_URI',
-      'http://localhost:3000',
-    );
+    const nonce: string = await this.nonceService.generate(address);
 
     const siweMessage = new SiweMessage({
-      domain,
+      domain: this.siweDomain,
       address,
       statement: 'Sign in with your Ethereum wallet.',
-      uri,
+      uri: this.siweUri,
       version: '1',
       chainId: 1,
       nonce,
@@ -74,76 +89,73 @@ export class AuthService {
       ipAddress,
     });
 
-    return { nonce, message: siweMessage.prepareMessage() };
+    return {
+      nonce,
+      message: siweMessage.prepareMessage(),
+    };
   }
 
   async verifySignature(
     dto: VerifySignatureDto,
     ipAddress?: string,
     userAgent?: string,
-  ) {
-    try {
-      const siweMessage = new SiweMessage(dto.message);
-      const { data: fields } = await siweMessage.verify({
-        signature: dto.signature,
-      });
+  ): Promise<{
+    accessToken: string;
+    expiresIn: string;
+    user: Awaited<ReturnType<UsersService['findOrCreate']>>;
+  }> {
+    const fields = await this.verifySiweMessage(dto);
 
-      const expectedDomain = this.configService.get<string>(
-        'APP_DOMAIN',
-        'localhost:3000',
-      );
-      if (fields.domain !== expectedDomain) {
-        throw new UnauthorizedException('Domain mismatch');
-      }
+    this.validateDomain(fields);
+    this.validateUri(fields);
+    this.validateChain(fields.chainId);
 
-      if (!this.supportedChainIds.includes(fields.chainId)) {
-        throw new UnauthorizedException(`Unsupported chain: ${fields.chainId}`);
-      }
+    const nonceValid: boolean = await this.nonceService.consume(
+      fields.address,
+      fields.nonce,
+    );
 
-      const valid = await this.nonceService.consume(
-        fields.address,
-        fields.nonce,
-      );
-      if (!valid) {
-        await this.log({
-          action: AuditAction.LOGIN_FAILED,
-          walletAddress: fields.address.toLowerCase(),
-          ipAddress,
-          metadata: { reason: 'Invalid or expired nonce' },
-        });
-        throw new UnauthorizedException('Invalid or expired nonce');
-      }
-
-      const user = await this.usersService.findOrCreate({
-        walletAddress: fields.address,
-        chainId: fields.chainId,
-      });
-
-      const payload = { sub: user.id, address: user.walletAddress };
-      const options: JwtSignOptions = {
-        expiresIn: this.configService.get('JWT_EXPIRES_IN') ?? '24h',
-      };
-
-      const token = this.jwtService.sign(payload, options);
-
+    if (!nonceValid) {
       await this.log({
-        action: AuditAction.LOGIN_SUCCESS,
-        userId: user.id,
-        walletAddress: user.walletAddress,
+        action: AuditAction.LOGIN_FAILED,
+        walletAddress: fields.address.toLowerCase(),
         ipAddress,
-        userAgent,
-        metadata: { chainId: fields.chainId },
+        metadata: { reason: 'Invalid or expired nonce' },
       });
 
-      return {
-        accessToken: token,
-        expiresIn: options.expiresIn as string,
-        user,
-      };
-    } catch (err) {
-      if (err instanceof UnauthorizedException) throw err;
-      throw new UnauthorizedException('Signature verification failed');
+      throw new UnauthorizedException('Invalid or expired nonce');
     }
+
+    const user = await this.usersService.findOrCreate({
+      walletAddress: fields.address,
+      chainId: fields.chainId,
+    });
+
+    const payload: JwtPayload = {
+      sub: user.id,
+      address: user.walletAddress,
+    };
+
+    const options: JwtSignOptions = {
+      expiresIn: this.jwtDuration,
+    };
+
+    const token: string = this.jwtService.sign(payload, options);
+
+    await this.log({
+      action: AuditAction.LOGIN_SUCCESS,
+      userId: user.id,
+      walletAddress: user.walletAddress,
+      ipAddress,
+      userAgent,
+      metadata: { chainId: fields.chainId },
+    });
+
+    return {
+      accessToken: token,
+      expiresIn: String(this.jwtDuration),
+      user,
+    };
   }
 
   async logout(userId: number, ipAddress?: string): Promise<void> {
@@ -154,14 +166,60 @@ export class AuthService {
     });
   }
 
-  private async log(data: {
-    action: AuditActionType;
-    userId?: number;
-    walletAddress?: string;
-    ipAddress?: string;
-    userAgent?: string;
-    metadata?: Record<string, any>;
-  }) {
+  private async verifySiweMessage(
+    dto: VerifySignatureDto,
+  ): Promise<SiweMessageData> {
+    try {
+      const siweMessage = new SiweMessage(dto.message);
+      const { data } = await siweMessage.verify({
+        signature: dto.signature,
+      });
+      return data;
+    } catch {
+      throw new UnauthorizedException('Signature verification failed');
+    }
+  }
+
+  private validateDomain(fields: SiweMessageData): void {
+    if (fields.domain !== this.siweDomain) {
+      throw new UnauthorizedException('Domain mismatch');
+    }
+  }
+
+  private validateUri(fields: SiweMessageData): void {
+    if (fields.uri !== this.siweUri) {
+      throw new UnauthorizedException('URI mismatch');
+    }
+  }
+
+  private validateChain(chainId: number): void {
+    if (!this.supportedChainIds.includes(chainId)) {
+      throw new UnauthorizedException(`Unsupported chain: ${chainId}`);
+    }
+  }
+
+  private getRequiredConfig(key: string): string {
+    const value = this.configService.get<string>(key);
+    if (!value) {
+      throw new Error(`Missing required config: ${key}`);
+    }
+    return value;
+  }
+
+  private parseChainIds(value: string): readonly number[] {
+    const chainIds = value
+      .split(',')
+      .map((id) => Number(id.trim()))
+      .filter((id) => Number.isInteger(id) && id > 0);
+
+    if (chainIds.length === 0) {
+      throw new Error('SUPPORTED_CHAIN_IDS must contain valid numbers');
+    }
+
+    return chainIds;
+  }
+
+  private async log(data: AuditLogInput): Promise<void> {
     await this.db.insert(auditLogs).values({
       ...data,
       metadata: data.metadata ? JSON.stringify(data.metadata) : null,
