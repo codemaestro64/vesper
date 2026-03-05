@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "cfb2eb83-3365-4392-8272-8d984f21cc00",
+  "id": "9b5bb948-e9b1-4f76-9dd9-c45331a3f96e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "users": {
@@ -20,14 +20,6 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
-        },
-        "chain_id": {
-          "name": "chain_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 1
         },
         "ens": {
           "name": "ens",
@@ -51,6 +43,13 @@
           "notNull": true,
           "autoincrement": false,
           "default": "(datetime('now'))"
+        },
+        "banned_at": {
+          "name": "banned_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {
@@ -329,6 +328,14 @@
           "notNull": true,
           "autoincrement": false
         },
+        "chain_id": {
+          "name": "chain_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
         "title": {
           "name": "title",
           "type": "text",
@@ -397,7 +404,7 @@
           "name": "status",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false,
           "default": "'draft'"
         },

@@ -13,7 +13,7 @@ async function bootstrap(): Promise<void> {
   const configService = app.get(ConfigService);
 
   // ensures API routes don't collide with next.js ssg
-  app.setGlobalPrefix('api', {
+  app.setGlobalPrefix('/api', {
     exclude: ['/'], // Reserve this part so that the web ssg will be served here
   });
 
@@ -49,7 +49,6 @@ async function bootstrap(): Promise<void> {
   await app.listen(port, '0.0.0.0');
 
   logger.log(`🚀 API is running on: http://localhost:${port}/api`);
-  logger.log(`📂 Serving Static Frontend from the root path`);
 }
 
 bootstrap().catch((err) => {

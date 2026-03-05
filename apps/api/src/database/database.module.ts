@@ -1,4 +1,4 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, Module, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient } from '@libsql/client';
 import { drizzle } from 'drizzle-orm/libsql';
@@ -19,6 +19,8 @@ function initDb(url: string, authToken?: string): DrizzleDB {
   return drizzle(client, { schema });
 }
 
+const logger = new Logger('DatabaseModule');
+
 @Global()
 @Module({
   providers: [
@@ -36,7 +38,9 @@ function initDb(url: string, authToken?: string): DrizzleDB {
         );
 
         const db = initDb(dbURL, dbAuthToken);
+        console.log('Running migrations...');
         await runMigrations(db);
+        console.log('Migrations complete.');
 
         return db;
       },

@@ -13,11 +13,12 @@
     }
   },
   "scripts": {
-    "build": "tsc -b",
-    "dev": "tsc -b --watch",
+    "build": "tsc -b && pnpm copy:migrations",
+    "dev": "concurrently \"tsc -b --watch\" \"cpx 'drizzle/**/*' dist/drizzle --watch\"",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
+    "copy:migrations": "cpx \"drizzle/**/*\" dist/drizzle",
     "lint": "eslint \"src/**/*.ts\" --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -33,6 +34,8 @@
   "devDependencies": {
     "@types/node": "^25.3.2",
     "@vesper/eslint-config": "workspace:*",
+    "concurrently": "^9.2.1",
+    "cpx2": "^8.0.0",
     "typescript-eslint": "^8.56.1"
   }
 }

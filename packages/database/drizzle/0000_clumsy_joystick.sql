@@ -1,10 +1,10 @@
 CREATE TABLE `users` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`wallet_address` text NOT NULL,
-	`chain_id` integer DEFAULT 1 NOT NULL,
 	`ens` text,
 	`created_at` text DEFAULT (datetime('now')) NOT NULL,
-	`last_login_at` text DEFAULT (datetime('now')) NOT NULL
+	`last_login_at` text DEFAULT (datetime('now')) NOT NULL,
+	`banned_at` text
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `users_wallet_address_unique` ON `users` (`wallet_address`);--> statement-breakpoint
@@ -47,6 +47,7 @@ CREATE TABLE `contracts` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`owner_id` integer NOT NULL,
 	`contract_type` text NOT NULL,
+	`chain_id` integer DEFAULT 1 NOT NULL,
 	`title` text NOT NULL,
 	`symbol` text,
 	`initial_supply` integer,
@@ -56,7 +57,7 @@ CREATE TABLE `contracts` (
 	`address` text,
 	`abi` text,
 	`network` text,
-	`status` text DEFAULT 'draft',
+	`status` text DEFAULT 'draft' NOT NULL,
 	`created_at` text DEFAULT (datetime('now')) NOT NULL,
 	`updated_at` text,
 	FOREIGN KEY (`owner_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE cascade

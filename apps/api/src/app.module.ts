@@ -7,6 +7,10 @@ import { ConfigService } from '@nestjs/config';
 import { ConfigModule } from './config/config.module';
 import { DatabaseModule } from './database/database.module';
 import { HealthModule } from './health/health.module';
+import { AuthModule } from './auth/auth.module';
+import { ContractsModule } from './contracts/contracts.module';
+import { NonceModule } from './nonce/nonce.module';
+import { UsersModule } from './users/users.module';
 import { APP_PIPE } from '@nestjs/core';
 
 @Module({
@@ -14,17 +18,21 @@ import { APP_PIPE } from '@nestjs/core';
     ConfigModule,
     DatabaseModule,
     HealthModule,
+    ContractsModule,
+    UsersModule,
+    NonceModule,
+    AuthModule,
     // Dynamic import for ServeStatic based on environment
     ServeStaticModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const isProd = config.get('NODE_ENV') === 'production';
+        console.log(config.get('NODE_ENV'));
         if (!isProd) return []; // Don't serve our static ssg app files in dev (Next will handle it)
 
         return [
           {
             rootPath: path.join(__dirname, '..', 'web/out'),
-            renderPath: '/*',
           },
         ];
       },

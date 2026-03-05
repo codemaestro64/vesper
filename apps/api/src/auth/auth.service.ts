@@ -41,12 +41,10 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {
-    this.supportedChainIds = this.parseChainIds(
-      this.getRequiredConfig('SUPPORTED_CHAIN_IDS'),
-    );
+    this.supportedChainIds = this.configService.get<number[]>('APP_DOMAIN', []);
 
-    this.siweDomain = this.getRequiredConfig('APP_DOMAIN');
-    this.siweUri = this.getRequiredConfig('APP_URI');
+    this.siweDomain = this.configService.get<string>('APP_DOMAIN', '');
+    this.siweUri = this.configService.get<string>('APP_URI', '');
 
     this.jwtDuration = this.configService.get<number>('JWT_DURATION') ?? 24;
   }
@@ -184,20 +182,7 @@ export class AuthService {
     }
   }
 
-  private getRequiredConfig(key: string): string {
-    const value = this.configService.get<string>(key);
-    if (!value) {
-      throw new Error(`Missing required config: ${key}`);
-    }
-    return value;
-  }
-
-  private parseChainIds(value: string): readonly number[] {
-    const chainIds = value
-      .split(',')
-      .map((id) => Number(id.trim()))
-      .filter((id) => Number.isInteger(id) && id > 0);
-
+  private parseChainIds(chainIds: number[]): readonly number[] {
     if (chainIds.length === 0) {
       throw new Error('SUPPORTED_CHAIN_IDS must contain valid numbers');
     }
