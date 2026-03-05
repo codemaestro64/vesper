@@ -18,6 +18,7 @@ import {
   VerifySignatureDto,
   VerifySignatureResponse,
 } from './dto';
+import { CONFIG } from '@/config/config.keys';
 
 interface AuditLogInput {
   action: AuditAction;
@@ -41,12 +42,12 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {
-    this.supportedChainIds = this.configService.get<number[]>('APP_DOMAIN', []);
-
-    this.siweDomain = this.configService.get<string>('APP_DOMAIN', '');
-    this.siweUri = this.configService.get<string>('APP_URI', '');
-
-    this.jwtDuration = this.configService.get<number>('JWT_DURATION') ?? 24;
+    this.supportedChainIds = this.configService.get<number[]>(
+      CONFIG.SUPPORTED_CHAIN_IDS,
+    )!;
+    this.siweDomain = this.configService.get<string>(CONFIG.APP_DOMAIN)!;
+    this.siweUri = this.configService.get<string>(CONFIG.APP_URI)!;
+    this.jwtDuration = this.configService.get<number>(CONFIG.JWT_DURATION)!;
   }
 
   async generateNonce(

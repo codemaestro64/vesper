@@ -6,8 +6,9 @@ import {
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { UsersService } from '../../users/users.service';
+import { UsersService } from '@/users/users.service';
 import { UserResponse } from '@/users/dto';
+import { CONFIG } from '@/config/config.keys';
 
 export interface JwtPayload {
   sub: string; // wallet address
@@ -19,8 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly configService: ConfigService,
     private readonly usersService: UsersService,
   ) {
-    const secret = configService.get<string>('JWT_SECRET');
-    if (!secret) throw new Error('JWT_SECRET is not defined');
+    const secret = configService.get<string>(CONFIG.JWT_SECRET)!;
 
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

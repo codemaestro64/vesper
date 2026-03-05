@@ -10,7 +10,7 @@ export const configSchema = z.object({
   APP_URI: z.string().default('/'),
 
   // Security
-  CORS_ORIGIN: z.string().url(),
+  CORS_ORIGIN: z.string().url().optional(),
   JWT_SECRET: z.string().min(16, 'Secret is too short!'),
   JWT_DURATION: z.string().default('24h'),
 
@@ -36,7 +36,7 @@ export const configSchema = z.object({
   }),
 
   // Database
-  DATABASE_URL: z.string(),
+  DATABASE_URL: z.string().min(1),
   DATABASE_AUTH_TOKEN: z.string().min(1).optional(),
 });
 

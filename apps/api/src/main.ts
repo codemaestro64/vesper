@@ -3,7 +3,8 @@ import { ValidationPipe, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import { AllExceptionsFilter } from './filters.module';
-import { AppModule } from './app.module';
+import { AppModule } from '@/app.module';
+import { CONFIG } from '@/config/config.keys';
 
 async function bootstrap(): Promise<void> {
   const logger = new Logger('Bootstrap');
@@ -35,17 +36,15 @@ async function bootstrap(): Promise<void> {
   app.useGlobalFilters(new AllExceptionsFilter());
 
   // CORS Configuration
-  const origin = configService.get<string>(
-    'CORS_ORIGIN',
-    'http://localhost:5173',
-  );
+  const origin = configService.get<string>(CONFIG.CORS_ORIGIN);
+  if (origin) {
+    app.enableCors({
+      origin,
+      credentials: true,
+    });
+  }
 
-  app.enableCors({
-    origin,
-    credentials: true,
-  });
-
-  const port = configService.get<number>('PORT', 3000);
+  const port = configService.get<number>(CONFIG.PORT)!;
   await app.listen(port, '0.0.0.0');
 
   logger.log(`🚀 API is running on: http://localhost:${port}/api`);

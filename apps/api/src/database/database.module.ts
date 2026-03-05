@@ -1,10 +1,11 @@
-import { Global, Module, Logger } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { createClient } from '@libsql/client';
 import { drizzle } from 'drizzle-orm/libsql';
 import * as schema from '@vesper/database';
 import { runMigrations } from '@vesper/database';
 import { type LibSQLDatabase } from 'drizzle-orm/libsql';
+import { CONFIG } from '@/config/config.keys';
 
 export const DRIZZLE = Symbol('DRIZZLE');
 export type DrizzleDB = LibSQLDatabase<typeof schema>;
@@ -19,8 +20,6 @@ function initDb(url: string, authToken?: string): DrizzleDB {
   return drizzle(client, { schema });
 }
 
-const logger = new Logger('DatabaseModule');
-
 @Global()
 @Module({
   providers: [
@@ -28,19 +27,13 @@ const logger = new Logger('DatabaseModule');
       provide: DRIZZLE,
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        const dbURL = configService.get<string>(
-          'DATABASE_URL',
-          'file:./database.sqlite',
-        );
-
+        const dbURL = configService.get<string>(CONFIG.DATABASE_URL)!;
         const dbAuthToken = configService.get<string | undefined>(
-          'DATABASE_AUTH_TOKEN',
+          CONFIG.DATABASE_AUTH_TOKEN,
         );
 
         const db = initDb(dbURL, dbAuthToken);
-        console.log('Running migrations...');
         await runMigrations(db);
-        console.log('Migrations complete.');
 
         return db;
       },
