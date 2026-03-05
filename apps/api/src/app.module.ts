@@ -27,12 +27,17 @@ import { APP_PIPE } from '@nestjs/core';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const isProd = config.get('NODE_ENV') === 'production';
-        console.log(config.get('NODE_ENV'));
         if (!isProd) return []; // Don't serve our static ssg app files in dev (Next will handle it)
 
         return [
           {
             rootPath: path.join(__dirname, '..', 'web/out'),
+            serveRoot: '/',
+            exclude: ['/api/(.*)'],
+            serveStaticOptions: {
+              index: 'index.html',
+              fallthrough: true,
+            },
           },
         ];
       },
