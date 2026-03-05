@@ -6,8 +6,8 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { NonceModule } from '../nonce/nonce.module';
-import { UsersModule } from '../users/users.module';
+import { NonceModule } from '@/nonce/nonce.module';
+import { UsersModule } from '@/users/users.module';
 
 @Module({
   imports: [

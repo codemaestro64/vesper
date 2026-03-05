@@ -8,14 +8,14 @@ import {
   UseGuards,
   ParseIntPipe,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
 import { ContractsService } from './contracts.service';
 import {
   ContractResponse,
   CreateContractDto,
   UpdateContractDto,
 } from './dto/contract.dto';
-import { GetUser } from '../auth/decorators/user.decorator';
+import { GetUser } from '@/auth/decorators/user.decorator';
 
 @UseGuards(JwtAuthGuard)
 @Controller('contracts') // Base Path /contracts

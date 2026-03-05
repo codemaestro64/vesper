@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { eq, and, lt } from 'drizzle-orm';
 import { randomBytes } from 'crypto';
-import { type DrizzleDB, DRIZZLE } from '../database/database.module';
+import { type DrizzleDB, DRIZZLE } from '@/database/database.module';
 import { nonces, users } from '@vesper/database';
 
 @Injectable()

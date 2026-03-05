@@ -1,6 +1,6 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { eq, and } from 'drizzle-orm';
-import { type DrizzleDB, DRIZZLE } from '../database/database.module';
+import { type DrizzleDB, DRIZZLE } from '@/database/database.module';
 import { contracts } from '@vesper/database';
 import { CreateContractDto, UpdateContractDto, ContractResponse } from './dto';
 import { toContractResponse } from './contracts.mapper';

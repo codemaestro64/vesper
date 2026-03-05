@@ -6,7 +6,7 @@ import {
   HealthCheckService,
   HealthCheckResult,
 } from '@nestjs/terminus';
-import { configSchema } from '../config/schema';
+import { configSchema } from '@/config/schema';
 import { DatabaseHealthIndicator } from './database.health';
 
 @ApiTags('Health')
