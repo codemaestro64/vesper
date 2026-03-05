@@ -1,3 +1,5 @@
+import type { Abi } from 'abitype';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Core Types — Vesper Contract Generation Engine
 // ─────────────────────────────────────────────────────────────────────────────
@@ -165,4 +167,51 @@ export interface ContractGenerator {
   baseParts(ctx: RenderContext): ContractParts;
   /** Ordered list of feature mixins this generator supports */
   mixins: FeatureMixin[];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Request/Response Dtos
+// ─────────────────────────────────────────────────────────────────────────────
+export enum ContractStatus {
+  DRAFT = 'draft',
+  DEPLOYED = 'deployed',
+  ARCHIVED = 'archived',
+}
+
+export interface CreateContractRequest {
+  contractType: ContractType;
+  name: string;
+  symbol: string | undefined;
+  initialSupply: number | undefined;
+  decimals: number | undefined;
+  features: string[] | undefined;
+  description: string | undefined;
+  contractAddress: string | undefined;
+  abi: string | undefined;
+  network: string | undefined;
+}
+
+export interface UpdateContractRequest {
+  contractAddress: string;
+  abi: Abi;
+  status: ContractStatus;
+}
+
+export interface ContractResponse {
+  id: number;
+  name: string;
+  contractType: ContractType;
+  chainId: number;
+  symbol: string | null;
+  initialSupply: number | null;
+  decimals: number | null;
+  features: string[] | null;
+  description: string | null;
+  address: string | null;
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  abi: Abi | null;
+  network: string | null;
+  status: ContractStatus;
+  createdAt: string;
+  updatedAt: string | null;
 }

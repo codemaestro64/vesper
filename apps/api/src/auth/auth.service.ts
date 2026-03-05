@@ -13,11 +13,8 @@ import { UsersService } from '@/users/users.service';
 import { DRIZZLE, type DrizzleDB } from '../database/database.module';
 import { AuditAction, auditLogs } from '@vesper/database';
 import { JwtPayload } from './strategies/jwt.strategy';
-import {
-  NonceResponse,
-  VerifySignatureDto,
-  VerifySignatureResponse,
-} from './dto';
+import { NonceResponse, VerifySignatureResponse } from '@vesper/types';
+import { VerifySignatureDto } from '@/auth/dto';
 import { CONFIG } from '@/config/config.keys';
 
 interface AuditLogInput {
@@ -127,6 +124,7 @@ export class AuthService {
     };
 
     const token: string = this.jwtService.sign(payload, options);
+    const decoded = this.jwtService.decode<{ exp: number }>(token);
 
     await this.log({
       action: AuditAction.LOGIN_SUCCESS,
@@ -138,7 +136,7 @@ export class AuthService {
 
     return {
       accessToken: token,
-      expiresIn: String(this.jwtDuration),
+      expiresIn: decoded.exp * 1000,
       user,
     };
   }

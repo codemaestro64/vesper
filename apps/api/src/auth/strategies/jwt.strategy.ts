@@ -4,10 +4,11 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Strategy } from 'passport-jwt';
+import { Request } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '@/users/users.service';
-import { UserResponse } from '@/users/dto';
+import { UserResponse } from '@vesper/types';
 import { CONFIG } from '@/config/config.keys';
 
 export interface JwtPayload {
@@ -23,9 +24,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const secret = configService.get<string>(CONFIG.JWT_SECRET)!;
 
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: (req: Request) =>
+        (req.cookies as Record<string, string>)?.token ?? null,
       ignoreExpiration: false,
       secretOrKey: secret,
+      passReqToCallback: false,
     });
   }
 

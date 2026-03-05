@@ -2,7 +2,8 @@ import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { DRIZZLE, type DrizzleDB } from '@/database/database.module';
 import { users } from '@vesper/database';
-import { GetUserDto, UserResponse } from './dto';
+import { GetUserDto } from './dto';
+import { UserResponse } from '@vesper/types';
 
 @Injectable()
 export class UsersService {

@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { sqliteTable, text, index, integer } from 'drizzle-orm/sqlite-core';
-import { ContractTypes, ContractType } from '@vesper/types';
+import { ContractTypes, ContractType, ContractStatus } from '@vesper/types';
 import { users } from './users.schema';
 import { Abi } from 'abitype';
 
@@ -32,9 +32,9 @@ export const contracts = sqliteTable('contracts', {
   abi: text('abi', { mode: 'json' }).$type<Abi>(),
   network: text('network'),
   status: text('status')
-    .$type<'draft' | 'deployed'>()
+    .$type<ContractStatus>()
     .notNull()
-    .default('draft'),
+    .default(ContractStatus.DRAFT),
   createdAt: text('created_at')
     .notNull()
     .default(sql`(datetime('now'))`),

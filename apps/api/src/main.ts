@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import { AllExceptionsFilter } from './filters.module';
 import { AppModule } from '@/app.module';
 import { CONFIG } from '@/config/config.keys';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap(): Promise<void> {
   const logger = new Logger('Bootstrap');
@@ -20,6 +21,7 @@ async function bootstrap(): Promise<void> {
 
   // Allow inline scripts
   app.use(helmet({ contentSecurityPolicy: false }));
+  app.use(cookieParser());
 
   // Enable Graceful Shutdown
   app.enableShutdownHooks();

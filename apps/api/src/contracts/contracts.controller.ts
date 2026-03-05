@@ -10,11 +10,8 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
 import { ContractsService } from './contracts.service';
-import {
-  ContractResponse,
-  CreateContractDto,
-  UpdateContractDto,
-} from './dto/contract.dto';
+import { CreateContractDto, UpdateContractDto } from './dto/contract.dto';
+import { ContractResponse } from '@vesper/types';
 import { GetUser } from '@/auth/decorators/user.decorator';
 
 @UseGuards(JwtAuthGuard)

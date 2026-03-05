@@ -1,5 +1,5 @@
 import { Contract } from '@vesper/database';
-import { ContractResponse } from './dto';
+import { ContractResponse } from '@vesper/types';
 
 export function toContractResponse(contract: Contract): ContractResponse {
   return {

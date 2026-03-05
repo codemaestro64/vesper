@@ -14,9 +14,14 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { ContractTypes, type ContractType } from '@vesper/types';
+import {
+  CreateContractRequest,
+  UpdateContractRequest,
+  ContractStatus,
+} from '@vesper/types';
 import type { Abi } from 'abitype';
 
-export class CreateContractDto {
+export class CreateContractDto implements CreateContractRequest {
   @ApiProperty({ enum: ContractTypes })
   @IsIn(Object.values(ContractTypes))
   @IsNotEmpty()
@@ -31,12 +36,12 @@ export class CreateContractDto {
   @IsString()
   @IsNotEmpty({ message: 'Symbol is required for ERC20 contracts' })
   @MaxLength(10)
-  symbol?: string;
+  symbol: string | undefined;
 
   @IsOptional()
   @IsInt()
   @Min(0)
-  initialSupply?: number;
+  initialSupply: number | undefined;
 
   // Validate decimals ONLY if contractType is ERC20
   @ValidateIf((o: CreateContractDto) => o.contractType === ContractTypes.ERC20)
@@ -44,59 +49,41 @@ export class CreateContractDto {
   @Min(0)
   @Max(18)
   @IsNotEmpty()
-  decimals?: number;
+  decimals: number | undefined;
 
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  features?: string[];
+  features: string[] | undefined;
 
   @IsOptional()
   @IsString()
   @MaxLength(2000)
-  description?: string;
+  description: string | undefined;
 
   @IsOptional()
   @IsEthereumAddress()
-  contractAddress?: string;
+  contractAddress: string | undefined;
 
   @IsOptional()
   @IsString()
-  abi?: string;
+  abi: string | undefined;
 
   @IsOptional()
   @IsString()
-  network?: string;
+  network: string | undefined;
 }
 
-export class UpdateContractDto {
+export class UpdateContractDto implements UpdateContractRequest {
   @IsOptional()
   @IsEthereumAddress()
-  contractAddress?: string;
+  contractAddress!: string;
 
   @IsOptional()
   @IsString()
-  abi?: Abi;
+  abi!: Abi;
 
   @IsOptional()
-  @IsEnum(['draft', 'deployed'])
-  status?: 'draft' | 'deployed';
-}
-
-export interface ContractResponse {
-  id: number;
-  name: string;
-  contractType: ContractType;
-  chainId: number;
-  symbol: string | null;
-  initialSupply: number | null;
-  decimals: number | null;
-  features: string[] | null;
-  description: string | null;
-  address: string | null;
-  abi: Abi | null;
-  network: string | null;
-  status: 'draft' | 'deployed';
-  createdAt: string;
-  updatedAt: string | null;
+  @IsEnum(ContractStatus)
+  status!: ContractStatus;
 }

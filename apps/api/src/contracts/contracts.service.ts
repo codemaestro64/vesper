@@ -2,7 +2,8 @@ import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { eq, and } from 'drizzle-orm';
 import { type DrizzleDB, DRIZZLE } from '@/database/database.module';
 import { contracts } from '@vesper/database';
-import { CreateContractDto, UpdateContractDto, ContractResponse } from './dto';
+import { CreateContractDto, UpdateContractDto } from './dto';
+import { ContractResponse, ContractStatus } from '@vesper/types';
 import { toContractResponse } from './contracts.mapper';
 
 @Injectable()
@@ -47,7 +48,7 @@ export class ContractsService {
         features: dto.features ?? [],
         description: dto.description ?? '',
         network: dto.network,
-        status: 'draft',
+        status: ContractStatus.DRAFT,
         createdAt: now,
       })
       .returning();

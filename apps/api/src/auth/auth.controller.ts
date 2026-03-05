@@ -9,16 +9,14 @@ import {
   HttpStatus,
   Ip,
   Headers,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import {
-  GetNonceDto,
-  NonceResponse,
-  VerifySignatureDto,
-  VerifySignatureResponse,
-} from './dto';
+import { GetNonceDto, VerifySignatureDto } from './dto';
+import { NonceResponse, VerifySignatureResponse } from '@vesper/types';
 import { GetUser } from './decorators/user.decorator';
 
 @Controller('auth') // Base Path /auth
@@ -45,12 +43,22 @@ export class AuthController {
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
   @Post('verify') // POST /auth/verify
-  verify(
+  async verify(
     @Body() dto: VerifySignatureDto,
     @Ip() ip: string,
     @Headers('user-agent') userAgent: string,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<VerifySignatureResponse> {
-    return this.authService.verifySignature(dto, ip, userAgent);
+    const result = await this.authService.verifySignature(dto, ip, userAgent);
+
+    res.cookie('token', result.accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: result.expiresIn - Date.now(),
+    });
+
+    return result;
   }
 
   /**

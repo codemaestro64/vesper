@@ -1,7 +1,7 @@
-import { UserResponse } from '@/users/dto';
 import { IsString, IsNotEmpty } from 'class-validator';
+import { VerifySignatureRequest } from '@vesper/types';
 
-export class VerifySignatureDto {
+export class VerifySignatureDto implements VerifySignatureRequest {
   @IsString()
   @IsNotEmpty()
   message!: string;
@@ -9,10 +9,4 @@ export class VerifySignatureDto {
   @IsString()
   @IsNotEmpty()
   signature!: string;
-}
-
-export interface VerifySignatureResponse {
-  accessToken: string;
-  expiresIn: string;
-  user: UserResponse;
 }

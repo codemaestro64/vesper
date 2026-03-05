@@ -1,15 +1,8 @@
 import { IsNotEmpty, IsString } from 'class-validator';
+import { GetUserRequest } from '@vesper/types';
 
-export class GetUserDto {
+export class GetUserDto implements GetUserRequest {
   @IsString()
   @IsNotEmpty()
   walletAddress!: string;
-}
-
-export interface UserResponse {
-  walletAddress: string;
-  ens: string | null;
-  createdAt: string; // ISO 8601
-  lastLoginAt: string; // ISO 8601
-  bannedAt: string | null; // ISO 8601
 }
