@@ -2,6 +2,7 @@ import { UserResponse } from '@/user';
 
 export interface GetNonceRequest {
   address: string;
+  chainId: number;
 }
 
 export interface NonceResponse {

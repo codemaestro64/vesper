@@ -49,6 +49,7 @@ export class AuthService {
 
   async generateNonce(
     address: string,
+    chainId: number,
     ipAddress?: string,
   ): Promise<NonceResponse> {
     if (!isAddress(address)) {
@@ -62,6 +63,7 @@ export class AuthService {
     const nonce: string = await this.nonceService.generate(address);
 
     const siweMessage = new SiweMessage({
+      chainId: chainId,
       domain: this.siweDomain,
       address,
       statement: 'Sign in with your Ethereum wallet.',

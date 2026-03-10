@@ -1,10 +1,12 @@
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
+
 export async function apiFetch<T>(
   url: string,
   options?: RequestInit,
 ): Promise<T> {
   const token = localStorage.getItem("token");
 
-  const res = await fetch(url, {
+  const res = await fetch(`${BASE_URL}${url}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",

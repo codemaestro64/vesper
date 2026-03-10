@@ -40,6 +40,7 @@ async function bootstrap(): Promise<void> {
   // CORS Configuration
   const origin = configService.get<string>(CONFIG.CORS_ORIGIN);
   if (origin) {
+    logger.log(`Enabling cors for ${origin}`);
     app.enableCors({
       origin,
       credentials: true,

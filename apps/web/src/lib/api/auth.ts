@@ -6,8 +6,8 @@ import {
 } from "@vesper/types";
 
 export const authApi = {
-  getNonce: (address: string): Promise<NonceResponse> =>
-    apiFetch(`/api/auth/nonce?address=${address}`),
+  getNonce: (address: string, chainId: number): Promise<NonceResponse> =>
+    apiFetch(`/api/auth/nonce?address=${address}&chainId=${chainId}`),
 
   verify: (data: VerifySignatureRequest): Promise<VerifySignatureResponse> =>
     apiFetch("/api/auth/verify", {

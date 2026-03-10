@@ -33,7 +33,7 @@ export class AuthController {
     @Query() dto: GetNonceDto,
     @Ip() ip: string,
   ): Promise<NonceResponse> {
-    return this.authService.generateNonce(dto.address, ip);
+    return this.authService.generateNonce(dto.address, dto.chainId, ip);
   }
 
   /**
@@ -49,16 +49,16 @@ export class AuthController {
     @Headers('user-agent') userAgent: string,
     @Res({ passthrough: true }) res: Response,
   ): Promise<VerifySignatureResponse> {
-    const result = await this.authService.verifySignature(dto, ip, userAgent);
+    const resp = await this.authService.verifySignature(dto, ip, userAgent);
 
-    res.cookie('token', result.accessToken, {
+    res.cookie('token', resp.accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
-      maxAge: result.expiresIn - Date.now(),
+      maxAge: resp.expiresIn - Date.now(),
     });
 
-    return result;
+    return resp;
   }
 
   /**
@@ -68,10 +68,13 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Post('logout') // POST /auth/logout
-  logout(
+  async logout(
     @GetUser('walletAddress') walletAddress: string,
     @Ip() ip: string,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    return this.authService.logout(walletAddress, ip);
+    const resp = await this.authService.logout(walletAddress, ip);
+    res.clearCookie('token');
+    return resp;
   }
 }
