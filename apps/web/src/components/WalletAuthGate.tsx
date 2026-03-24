@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useWalletAuth } from "@/hooks/useWalletAuth";
+import { useWalletAuth } from '@/hooks/useWalletAuth';
 
 export function WalletAuthGate({ children }: { children: React.ReactNode }) {
   useWalletAuth();

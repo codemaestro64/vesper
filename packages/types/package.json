@@ -18,10 +18,16 @@
     "lint": "eslint \"src/**/*.ts\" --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["vesper", "types", "typescript"],
+  "keywords": [
+    "vesper",
+    "types",
+    "typescript"
+  ],
   "license": "MIT",
   "devDependencies": {
-    "@vesper/eslint-config": "workspace:*"
+    "@vesper/eslint-config": "workspace:*",
+    "@vesper/tsconfig": "workspace:*",
+    "typescript-eslint": "^8.20.0"
   },
   "packageManager": "pnpm@10.30.3",
   "dependencies": {

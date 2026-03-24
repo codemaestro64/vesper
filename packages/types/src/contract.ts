@@ -208,7 +208,7 @@ export interface ContractResponse {
   features: string[] | null;
   description: string | null;
   address: string | null;
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+
   abi: Abi | null;
   network: string | null;
   status: ContractStatus;

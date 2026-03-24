@@ -1,0 +1,227 @@
+import { SOL_VERSION } from './constants';
+
+export function foundryFiles(
+  name: string,
+  code: string,
+): Record<string, string> {
+  return {
+    // ── Contract source ───────────────────────────────────────────────────────
+    [`src/${name}.sol`]: code,
+
+    // ── Deploy script ─────────────────────────────────────────────────────────
+    [`script/Deploy${name}.s.sol`]: `\
+// SPDX-License-Identifier: MIT
+pragma solidity ${SOL_VERSION};
+
+import {Script, console} from "forge-std/Script.sol";
+import {${name}} from "../src/${name}.sol";
+
+contract Deploy${name} is Script {
+    function run() external returns (${name} instance) {
+        uint256 deployerKey = vm.envUint("PRIVATE_KEY");
+
+        vm.startBroadcast(deployerKey);
+        instance = new ${name}();
+        vm.stopBroadcast();
+
+        console.log("${name} deployed at:", address(instance));
+    }
+}
+`,
+
+    // ── Test ──────────────────────────────────────────────────────────────────
+    [`test/${name}.t.sol`]: `\
+// SPDX-License-Identifier: MIT
+pragma solidity ${SOL_VERSION};
+
+import {Test, console} from "forge-std/Test.sol";
+import {${name}} from "../src/${name}.sol";
+
+contract ${name}Test is Test {
+    ${name} public instance;
+    address public owner = makeAddr("owner");
+
+    function setUp() public {
+        vm.startPrank(owner);
+        instance = new ${name}();
+        vm.stopPrank();
+    }
+
+    function test_Deployment() public view {
+        assertTrue(address(instance) != address(0));
+    }
+
+    function test_Owner() public view {
+        // Remove if your contract doesn't extend Ownable
+        assertEq(instance.owner(), owner);
+    }
+
+    function testFuzz_Example(uint256 value) public pure {
+        // Add fuzz tests here
+        vm.assume(value > 0);
+    }
+}
+`,
+
+    // ── foundry.toml ──────────────────────────────────────────────────────────
+    'foundry.toml': `\
+[profile.default]
+src             = "src"
+out             = "out"
+libs            = ["lib"]
+solc            = "${SOL_VERSION}"
+optimizer       = true
+optimizer_runs  = 200
+via_ir          = false
+remappings      = ["@openzeppelin/=lib/openzeppelin-contracts/"]
+
+[profile.ci]
+fuzz = { runs = 1000 }
+
+[rpc_endpoints]
+mainnet          = "\${MAINNET_RPC_URL}"
+sepolia          = "\${SEPOLIA_RPC_URL}"
+base             = "\${BASE_RPC_URL}"
+base_sepolia     = "\${BASE_SEPOLIA_RPC_URL}"
+arbitrum         = "\${ARBITRUM_RPC_URL}"
+arbitrum_sepolia = "\${ARBITRUM_SEPOLIA_RPC_URL}"
+optimism         = "\${OPTIMISM_RPC_URL}"
+optimism_sepolia = "\${OPTIMISM_SEPOLIA_RPC_URL}"
+polygon          = "\${POLYGON_RPC_URL}"
+polygon_amoy     = "\${POLYGON_AMOY_RPC_URL}"
+
+[etherscan]
+mainnet  = { key = "\${ETHERSCAN_API_KEY}" }
+sepolia  = { key = "\${ETHERSCAN_API_KEY}",   url = "https://api-sepolia.etherscan.io/api" }
+base     = { key = "\${BASESCAN_API_KEY}",    url = "https://api.basescan.org/api" }
+arbitrum = { key = "\${ARBISCAN_API_KEY}",    url = "https://api.arbiscan.io/api" }
+optimism = { key = "\${OPTIMISM_API_KEY}",    url = "https://api-optimistic.etherscan.io/api" }
+polygon  = { key = "\${POLYGONSCAN_API_KEY}", url = "https://api.polygonscan.com/api" }
+`,
+
+    // ── .env.example ─────────────────────────────────────────────────────────
+    '.env.example': `\
+# ── Deployer ─────────────────────────────────────────────────────────────────
+# Raw private key WITHOUT 0x prefix
+PRIVATE_KEY=
+
+# ── RPC URLs ──────────────────────────────────────────────────────────────────
+MAINNET_RPC_URL=
+SEPOLIA_RPC_URL=
+BASE_RPC_URL=
+BASE_SEPOLIA_RPC_URL=
+ARBITRUM_RPC_URL=
+ARBITRUM_SEPOLIA_RPC_URL=
+OPTIMISM_RPC_URL=
+OPTIMISM_SEPOLIA_RPC_URL=
+POLYGON_RPC_URL=
+POLYGON_AMOY_RPC_URL=
+
+# ── Block explorer keys ───────────────────────────────────────────────────────
+ETHERSCAN_API_KEY=
+BASESCAN_API_KEY=
+ARBISCAN_API_KEY=
+OPTIMISM_API_KEY=
+POLYGONSCAN_API_KEY=
+`,
+
+    // ── Makefile ──────────────────────────────────────────────────────────────
+    Makefile: `\
+.PHONY: install build test deploy-sepolia deploy-base clean
+
+install:
+\tforge install OpenZeppelin/openzeppelin-contracts
+
+build:
+\tforge build
+
+test:
+\tforge test -vvv
+
+test-fuzz:
+\tforge test --fuzz-runs 1000 -vvv
+
+deploy-sepolia:
+\t@source .env && forge script script/Deploy${name}.s.sol \\
+\t\t--rpc-url $$SEPOLIA_RPC_URL \\
+\t\t--broadcast \\
+\t\t--verify \\
+\t\t-vvvv
+
+deploy-base:
+\t@source .env && forge script script/Deploy${name}.s.sol \\
+\t\t--rpc-url $$BASE_RPC_URL \\
+\t\t--broadcast \\
+\t\t--verify \\
+\t\t-vvvv
+
+clean:
+\tforge clean
+`,
+
+    // ── .gitignore ────────────────────────────────────────────────────────────
+    '.gitignore': `\
+# Foundry
+out/
+cache/
+broadcast/*/dry-run/
+
+# Environment
+.env
+
+# IDE
+.idea/
+.vscode/
+`,
+
+    // ── README ────────────────────────────────────────────────────────────────
+    'README.md': `\
+# ${name} — Foundry Project
+
+Generated by [Vesper](https://vesper.build).
+
+## Prerequisites
+
+- [Foundry](https://book.getfoundry.sh/getting-started/installation)
+
+## Setup
+
+\`\`\`bash
+make install          # installs OpenZeppelin via forge
+cp .env.example .env  # fill in PRIVATE_KEY and RPC URLs
+\`\`\`
+
+## Build
+
+\`\`\`bash
+make build
+# or: forge build
+\`\`\`
+
+## Test
+
+\`\`\`bash
+make test
+# or: forge test -vvv
+\`\`\`
+
+## Deploy
+
+\`\`\`bash
+# Testnet (recommended first)
+make deploy-sepolia
+
+# Mainnet (real funds — verify everything first)
+make deploy-base
+\`\`\`
+
+## Verify
+
+\`\`\`bash
+forge verify-contract <DEPLOYED_ADDRESS> src/${name}.sol:${name} \\
+  --chain sepolia \\
+  --etherscan-api-key $ETHERSCAN_API_KEY
+\`\`\`
+`,
+  };
+}

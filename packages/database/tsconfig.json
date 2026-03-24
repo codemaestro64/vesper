@@ -1,22 +1,15 @@
 {
+  "extends": "@vesper/tsconfig/base.json",
   "compilerOptions": {
     "composite": true,
-    "target": "ES2022",
     "module": "CommonJS",
     "moduleResolution": "Node",
     "outDir": "./dist/src",
     "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,   
-    "sourceMap": true,       
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "baseUrl": ".",
+    "declarationMap": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@vesper/types": ["../types/src/index.ts"]
     }
   },
   "include": ["src/**/*.ts"],

@@ -1,31 +1,34 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Wallet, Rocket, Save, CheckCircle2,
-  LayoutDashboard, Lock,
-} from 'lucide-react'
-import { useAccount } from 'wagmi'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { cn } from '@/lib/utils'
-import { useEditorContract } from '@/context/EditorContractContext'
+  Wallet,
+  Rocket,
+  Save,
+  CheckCircle2,
+  LayoutDashboard,
+  Lock,
+} from 'lucide-react';
+import { useAccount } from 'wagmi';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { cn } from '@/lib/utils';
+import { useEditorContract } from '@/context/EditorContractContext';
 
 export interface WalletActionBarProps {
-  contractName: string
-  onDeploy?:    () => void
-  className?:   string
+  contractName: string;
+  onDeploy?: () => void;
+  className?: string;
 }
 
-export default function WalletActionBar({
-  className
-}: WalletActionBarProps) {
-  const { isConnected, address } = useAccount()
-  const { openConnectModal }     = useConnectModal()
-  const { name, isSaving, saved, onDeploy, onSave } = useEditorContract()
+export default function WalletActionBar({ className }: WalletActionBarProps) {
+  const { isConnected, address } = useAccount();
+  const { openConnectModal } = useConnectModal();
+  const { name, isSaving, saved, onDeploy, onSave } = useEditorContract();
 
-  function fmtAddr(a: string) { return `${a.slice(0, 6)}…${a.slice(-4)}` }
+  function fmtAddr(a: string) {
+    return `${a.slice(0, 6)}…${a.slice(-4)}`;
+  }
 
   return (
     <AnimatePresence mode="wait">
@@ -34,7 +37,7 @@ export default function WalletActionBar({
           key="connected"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{    opacity: 0 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
           className={cn('flex items-center gap-1.5', className)}
         >
@@ -84,7 +87,7 @@ export default function WalletActionBar({
           key="disconnected"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{    opacity: 0 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
           className={cn('flex items-center', className)}
         >
@@ -101,8 +104,7 @@ export default function WalletActionBar({
             Connect to save
           </button>
         </motion.div>
-
       )}
     </AnimatePresence>
-  )
+  );
 }

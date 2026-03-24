@@ -1,47 +1,47 @@
-import * as React from "react";
-import { cva } from "class-variance-authority";
-import { motion } from "framer-motion";
-import { CheckCircle, AlertTriangle, XCircle, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import type { Toast, ToastVariant } from "./types";
+import * as React from 'react';
+import { cva } from 'class-variance-authority';
+import { motion } from 'framer-motion';
+import { CheckCircle, AlertTriangle, XCircle, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import type { Toast, ToastVariant } from './types';
 
 const toastVariants = cva(
-  "relative flex items-start gap-3 w-80 rounded-xl border px-4 py-3.5 text-sm shadow-lg backdrop-blur-xl pointer-events-auto",
+  'relative flex items-start gap-3 w-80 rounded-xl border px-4 py-3.5 text-sm shadow-lg backdrop-blur-xl pointer-events-auto',
   {
     variants: {
       variant: {
         success:
-          "bg-card/90 border-primary/30 shadow-[0_0_20px_hsl(38_95%_58%/0.08)]",
+          'bg-card/90 border-primary/30 shadow-[0_0_20px_hsl(38_95%_58%/0.08)]',
         warning:
-          "bg-card/90 border-accent/30 shadow-[0_0_20px_hsl(22_90%_52%/0.08)]",
+          'bg-card/90 border-accent/30 shadow-[0_0_20px_hsl(22_90%_52%/0.08)]',
         error:
-          "bg-card/90 border-destructive/30 shadow-[0_0_20px_hsl(0_72%_51%/0.08)]",
+          'bg-card/90 border-destructive/30 shadow-[0_0_20px_hsl(0_72%_51%/0.08)]',
       },
     },
-    defaultVariants: { variant: "success" },
+    defaultVariants: { variant: 'success' },
   },
 );
 
-const iconVariants = cva("mt-0.5 shrink-0 w-4 h-4", {
+const iconVariants = cva('mt-0.5 shrink-0 w-4 h-4', {
   variants: {
     variant: {
-      success: "text-primary",
-      warning: "text-accent",
-      error: "text-destructive",
+      success: 'text-primary',
+      warning: 'text-accent',
+      error: 'text-destructive',
     },
   },
-  defaultVariants: { variant: "success" },
+  defaultVariants: { variant: 'success' },
 });
 
-const progressVariants = cva("absolute bottom-0 left-0 h-[2px] rounded-b-xl", {
+const progressVariants = cva('absolute bottom-0 left-0 h-[2px] rounded-b-xl', {
   variants: {
     variant: {
-      success: "bg-primary",
-      warning: "bg-accent",
-      error: "bg-destructive",
+      success: 'bg-primary',
+      warning: 'bg-accent',
+      error: 'bg-destructive',
     },
   },
-  defaultVariants: { variant: "success" },
+  defaultVariants: { variant: 'success' },
 });
 
 const ICONS: Record<ToastVariant, React.ElementType> = {
@@ -65,7 +65,7 @@ export function ToastItem({ toast, onDismiss }: ToastItemProps) {
       initial={{ opacity: 0, y: 24, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: -8, scale: 0.95 }}
-      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
       className={cn(toastVariants({ variant: toast.variant }))}
     >
       <Icon className={cn(iconVariants({ variant: toast.variant }))} />
@@ -91,9 +91,9 @@ export function ToastItem({ toast, onDismiss }: ToastItemProps) {
 
       <motion.div
         className={cn(progressVariants({ variant: toast.variant }))}
-        initial={{ width: "100%" }}
-        animate={{ width: "0%" }}
-        transition={{ duration: duration / 1000, ease: "linear" }}
+        initial={{ width: '100%' }}
+        animate={{ width: '0%' }}
+        transition={{ duration: duration / 1000, ease: 'linear' }}
         onAnimationComplete={() => onDismiss(toast.id)}
       />
     </motion.div>

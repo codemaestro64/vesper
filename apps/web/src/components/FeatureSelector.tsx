@@ -1,13 +1,13 @@
-'use client'
+'use client';
 
-import type { FeatureOption } from '@vesper/types'
-import SelectableCard from '@/components/ui/SelectableCard'
-import { cn } from '@/lib/utils'
+import type { FeatureOption } from '@vesper/types';
+import SelectableCard from '@/components/ui/SelectableCard';
+import { cn } from '@/lib/utils';
 
 interface FeatureSelectorProps {
-  selectedFeatures: string[]
-  availableFeatures: FeatureOption[]
-  onToggleFeature: (featureId: string) => void
+  selectedFeatures: string[];
+  availableFeatures: FeatureOption[];
+  onToggleFeature: (featureId: string) => void;
 }
 
 export default function FeatureSelector({
@@ -18,7 +18,7 @@ export default function FeatureSelector({
   return (
     <div className="grid grid-cols-2 gap-2">
       {availableFeatures.map((feature) => {
-        const isSelected = selectedFeatures.includes(feature.id)
+        const isSelected = selectedFeatures.includes(feature.id);
         return (
           <SelectableCard
             key={feature.id}
@@ -34,15 +34,19 @@ export default function FeatureSelector({
               <div
                 className={cn(
                   'w-3 h-3 rounded-sm border shrink-0 transition-colors',
-                  isSelected ? 'bg-primary border-primary' : 'border-muted-foreground/30'
+                  isSelected
+                    ? 'bg-primary border-primary'
+                    : 'border-muted-foreground/30',
                 )}
                 aria-hidden="true"
               />
-              <span className="text-sm font-medium leading-tight">{feature.label}</span>
+              <span className="text-sm font-medium leading-tight">
+                {feature.label}
+              </span>
             </div>
           </SelectableCard>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

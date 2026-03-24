@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import { Zap, Shield, Download } from 'lucide-react'
-import Button from '@/components/ui/button'
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { Zap, Shield, Download } from 'lucide-react';
+import Button from '@/components/ui/button';
 
 const FEATURES = [
   { icon: Zap, label: 'Instant generation' },
   { icon: Shield, label: 'OpenZeppelin based' },
   { icon: Download, label: 'Download & deploy' },
-] as const
+] as const;
 
 export default function HeroSection() {
   return (
@@ -67,5 +67,5 @@ export default function HeroSection() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

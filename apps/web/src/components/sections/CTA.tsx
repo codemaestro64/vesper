@@ -1,20 +1,20 @@
-'use client'
+'use client';
 
-import { motion, useInView } from 'framer-motion'
-import { useRef } from 'react'
-import Link from 'next/link'
-import { ArrowRight, GitBranch, Package, Zap } from 'lucide-react'
-import Button from '@/components/ui/button'
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
+import Link from 'next/link';
+import { ArrowRight, GitBranch, Package, Zap } from 'lucide-react';
+import Button from '@/components/ui/button';
 
 const STATS = [
   { icon: Package, value: '6', label: 'Contract templates' },
   { icon: GitBranch, value: '40+', label: 'Configurable features' },
   { icon: Zap, value: '<1s', label: 'Generation time' },
-]
+];
 
 export default function CTASection() {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
     <section ref={ref} className="relative py-32 px-4 sm:px-6 overflow-hidden">
@@ -36,7 +36,7 @@ export default function CTASection() {
           className="flex items-center justify-center gap-12 mb-16"
         >
           {STATS.map((stat, i) => {
-            const Icon = stat.icon
+            const Icon = stat.icon;
             return (
               <motion.div
                 key={stat.label}
@@ -46,10 +46,14 @@ export default function CTASection() {
                 className="text-center"
               >
                 <Icon className="w-4 h-4 text-primary mx-auto mb-2 opacity-70" />
-                <div className="text-3xl font-bold gradient-text mb-0.5">{stat.value}</div>
-                <div className="text-xs text-muted-foreground font-medium">{stat.label}</div>
+                <div className="text-3xl font-bold gradient-text mb-0.5">
+                  {stat.value}
+                </div>
+                <div className="text-xs text-muted-foreground font-medium">
+                  {stat.label}
+                </div>
               </motion.div>
-            )
+            );
           })}
         </motion.div>
 
@@ -71,8 +75,8 @@ export default function CTASection() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-muted-foreground text-lg max-w-xl mx-auto mb-10 leading-relaxed"
         >
-          No accounts, no paywalls, no lock-in. Open Vesper, configure your contract,
-          download your Solidity file. Done.
+          No accounts, no paywalls, no lock-in. Open Vesper, configure your
+          contract, download your Solidity file. Done.
         </motion.p>
 
         <motion.div
@@ -82,9 +86,16 @@ export default function CTASection() {
           className="flex items-center justify-center gap-4 flex-wrap"
         >
           <Link href="/create">
-            <Button variant="glow" size="lg" className="h-14 px-10 text-base gap-2.5 group">
+            <Button
+              variant="glow"
+              size="lg"
+              className="h-14 px-10 text-base gap-2.5 group"
+            >
               Start Building
-              <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
+              <ArrowRight
+                size={16}
+                className="transition-transform duration-200 group-hover:translate-x-1"
+              />
             </Button>
           </Link>
           <span className="text-xs text-muted-foreground/50 font-mono">
@@ -93,5 +104,5 @@ export default function CTASection() {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,18 +1,21 @@
-"use client";
+'use client';
 
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
 export interface ConfigSectionTitleProps {
   title: string;
   step: number;
 }
 
-export default function ConfigSectionTitle({ title, step }: ConfigSectionTitleProps) {
+export default function ConfigSectionTitle({
+  title,
+  step,
+}: ConfigSectionTitleProps) {
   return (
     <motion.h2
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
       viewport={{ once: true }}
       className="text-xs font-semibold mb-3 flex items-center gap-2 uppercase tracking-widest text-muted-foreground"
     >

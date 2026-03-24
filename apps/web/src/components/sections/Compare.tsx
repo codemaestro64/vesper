@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { motion, useInView, AnimatePresence } from 'framer-motion'
-import { useRef, useState } from 'react'
-import { X, Check, ToggleLeft, ToggleRight } from 'lucide-react'
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { useRef, useState } from 'react';
+import { X, Check, ToggleLeft, ToggleRight } from 'lucide-react';
 
 const BEFORE_PROBLEMS = [
   'Copy-pasting from StackOverflow',
@@ -13,7 +13,7 @@ const BEFORE_PROBLEMS = [
   'Copy-pasting from StackOverflow again',
   'integer overflow because you forgot SafeMath',
   'import paths break on every machine',
-]
+];
 
 const AFTER_BENEFITS = [
   'OpenZeppelin base contracts, always',
@@ -24,7 +24,7 @@ const AFTER_BENEFITS = [
   'Clean imports, relative paths resolved',
   'Solidity ≥ 0.8 — overflow is history',
   'Download and deploy in 30 seconds',
-]
+];
 
 const BEFORE_CODE = `// DIY approach — written at 2am
 pragma solidity 0.7.6; // oops
@@ -47,7 +47,7 @@ contract MyToken {
     // no overflow protection
     balances[to] += amt;
   }
-}`
+}`;
 
 const AFTER_CODE = `// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
@@ -75,50 +75,77 @@ contract MyToken is ERC20, Ownable {
     if (to == address(0)) revert ZeroAddress();
     _mint(to, amount);
   }
-}`
+}`;
 
 function CodePane({ code, isAfter }: { code: string; isAfter: boolean }) {
-  const accent = isAfter ? 'hsl(174 72% 50%)' : 'hsl(0 72% 51%)'
+  const accent = isAfter ? 'hsl(174 72% 50%)' : 'hsl(0 72% 51%)';
   return (
     <div className="glass-card rounded-xl overflow-hidden h-full">
       <div className="flex items-center gap-1.5 px-4 py-3 border-b border-border/50">
-        <div className={`w-2.5 h-2.5 rounded-full ${isAfter ? 'bg-primary/60' : 'bg-destructive/60'}`} />
+        <div
+          className={`w-2.5 h-2.5 rounded-full ${isAfter ? 'bg-primary/60' : 'bg-destructive/60'}`}
+        />
         <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
         <div className="w-2.5 h-2.5 rounded-full bg-muted/60" />
         <span className="text-xs text-muted-foreground font-mono ml-2">
           {isAfter ? 'MyToken.sol — Vesper' : 'MyToken.sol — DIY'}
         </span>
         {isAfter && (
-          <span className="ml-auto text-[10px] font-mono px-2 py-0.5 rounded-full" style={{ background: 'hsl(174 72% 50% / 0.12)', color: accent }}>
+          <span
+            className="ml-auto text-[10px] font-mono px-2 py-0.5 rounded-full"
+            style={{ background: 'hsl(174 72% 50% / 0.12)', color: accent }}
+          >
             ✓ generated
           </span>
         )}
       </div>
       <pre className="p-4 text-xs font-mono leading-relaxed overflow-auto max-h-[340px] scrollbar-hide">
         {code.split('\n').map((line, i) => {
-          const isComment = line.trim().startsWith('//')  || line.trim().startsWith('///')  || line.trim().startsWith('*') || line.trim().startsWith('/*') || line.trim().startsWith('/**')
-          const isKeyword = /\b(pragma|solidity|contract|import|function|public|private|external|internal|modifier|constructor|mapping|address|uint|uint256|bool|string|returns|return|if|is|error|revert|emit|event)\b/.test(line)
+          const isComment =
+            line.trim().startsWith('//') ||
+            line.trim().startsWith('///') ||
+            line.trim().startsWith('*') ||
+            line.trim().startsWith('/*') ||
+            line.trim().startsWith('/**');
+          const isKeyword =
+            /\b(pragma|solidity|contract|import|function|public|private|external|internal|modifier|constructor|mapping|address|uint|uint256|bool|string|returns|return|if|is|error|revert|emit|event)\b/.test(
+              line,
+            );
           return (
             <div key={i} className="flex">
-              <span className="select-none text-muted-foreground/25 w-5 mr-3 shrink-0 text-right text-[10px] leading-[1.7]">{i + 1}</span>
-              <span className={isComment ? 'text-muted-foreground/50 italic' : isKeyword ? 'text-primary/90' : 'text-foreground/70'}>
+              <span className="select-none text-muted-foreground/25 w-5 mr-3 shrink-0 text-right text-[10px] leading-[1.7]">
+                {i + 1}
+              </span>
+              <span
+                className={
+                  isComment
+                    ? 'text-muted-foreground/50 italic'
+                    : isKeyword
+                      ? 'text-primary/90'
+                      : 'text-foreground/70'
+                }
+              >
                 {line || '\u00A0'}
               </span>
             </div>
-          )
+          );
         })}
       </pre>
     </div>
-  )
+  );
 }
 
 export default function CompareSection() {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
-  const [showAfter, setShowAfter] = useState(false)
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const [showAfter, setShowAfter] = useState(false);
 
   return (
-    <section id="compare" ref={ref} className="relative py-28 px-4 sm:px-6 overflow-hidden">
+    <section
+      id="compare"
+      ref={ref}
+      className="relative py-28 px-4 sm:px-6 overflow-hidden"
+    >
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
 
       <div className="max-w-6xl mx-auto">
@@ -130,25 +157,31 @@ export default function CompareSection() {
           className="mb-14 flex flex-col sm:flex-row sm:items-end justify-between gap-8"
         >
           <div>
-            <p className="text-primary text-xs font-mono uppercase tracking-[0.2em] mb-3">The difference</p>
+            <p className="text-primary text-xs font-mono uppercase tracking-[0.2em] mb-3">
+              The difference
+            </p>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-              Manual vs Vesper.<br />
+              Manual vs Vesper.
+              <br />
               <span className="gradient-text">Spot the difference.</span>
             </h2>
           </div>
 
           {/* Toggle */}
           <button
-            onClick={() => setShowAfter(v => !v)}
+            onClick={() => setShowAfter((v) => !v)}
             className="inline-flex items-center gap-3 glass-card rounded-full px-5 py-2.5 transition-all duration-200 hover:border-primary/30 shrink-0 group"
           >
             <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-              {showAfter ? 'Showing: Vesper output' : 'Showing: Manual approach'}
+              {showAfter
+                ? 'Showing: Vesper output'
+                : 'Showing: Manual approach'}
             </span>
-            {showAfter
-              ? <ToggleRight size={20} className="text-primary" />
-              : <ToggleLeft size={20} className="text-muted-foreground" />
-            }
+            {showAfter ? (
+              <ToggleRight size={20} className="text-primary" />
+            ) : (
+              <ToggleLeft size={20} className="text-muted-foreground" />
+            )}
           </button>
         </motion.div>
 
@@ -170,7 +203,9 @@ export default function CompareSection() {
                   transition={{ duration: 0.25 }}
                   className="space-y-2.5"
                 >
-                  <p className="text-xs font-mono text-destructive/70 uppercase tracking-widest mb-4">Without Vesper</p>
+                  <p className="text-xs font-mono text-destructive/70 uppercase tracking-widest mb-4">
+                    Without Vesper
+                  </p>
                   {BEFORE_PROBLEMS.map((item, i) => (
                     <motion.div
                       key={item}
@@ -179,8 +214,13 @@ export default function CompareSection() {
                       transition={{ delay: i * 0.05 }}
                       className="flex items-start gap-3 glass-card rounded-lg px-4 py-3 border-destructive/10"
                     >
-                      <X size={14} className="text-destructive/60 mt-0.5 shrink-0" />
-                      <span className="text-sm text-muted-foreground/70 line-through decoration-destructive/30">{item}</span>
+                      <X
+                        size={14}
+                        className="text-destructive/60 mt-0.5 shrink-0"
+                      />
+                      <span className="text-sm text-muted-foreground/70 line-through decoration-destructive/30">
+                        {item}
+                      </span>
                     </motion.div>
                   ))}
                 </motion.div>
@@ -193,7 +233,9 @@ export default function CompareSection() {
                   transition={{ duration: 0.25 }}
                   className="space-y-2.5"
                 >
-                  <p className="text-xs font-mono text-primary/70 uppercase tracking-widest mb-4">With Vesper</p>
+                  <p className="text-xs font-mono text-primary/70 uppercase tracking-widest mb-4">
+                    With Vesper
+                  </p>
                   {AFTER_BENEFITS.map((item, i) => (
                     <motion.div
                       key={item}
@@ -202,7 +244,10 @@ export default function CompareSection() {
                       transition={{ delay: i * 0.05 }}
                       className="flex items-start gap-3 glass-card rounded-lg px-4 py-3 border-primary/20"
                     >
-                      <Check size={14} className="text-primary mt-0.5 shrink-0" />
+                      <Check
+                        size={14}
+                        className="text-primary mt-0.5 shrink-0"
+                      />
                       <span className="text-sm text-foreground/80">{item}</span>
                     </motion.div>
                   ))}
@@ -225,12 +270,15 @@ export default function CompareSection() {
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ duration: 0.25 }}
               >
-                <CodePane code={showAfter ? AFTER_CODE : BEFORE_CODE} isAfter={showAfter} />
+                <CodePane
+                  code={showAfter ? AFTER_CODE : BEFORE_CODE}
+                  isAfter={showAfter}
+                />
               </motion.div>
             </AnimatePresence>
           </motion.div>
         </div>
       </div>
     </section>
-  )
+  );
 }

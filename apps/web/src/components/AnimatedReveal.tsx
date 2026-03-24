@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
-import type { ReactNode } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { cn } from '@/lib/utils'
+import type { ReactNode } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface AnimatedRevealProps {
-  show: boolean
-  children: ReactNode
+  show: boolean;
+  children: ReactNode;
   /** Unique key for AnimatePresence to track this element */
-  id: string
-  className?: string
+  id: string;
+  className?: string;
 }
 
 /**
@@ -36,5 +36,5 @@ export default function AnimatedReveal({
         </motion.div>
       )}
     </AnimatePresence>
-  )
+  );
 }

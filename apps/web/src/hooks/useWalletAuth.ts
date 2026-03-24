@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
-import { useAccount, useDisconnect } from "wagmi";
-import { useSignMessage } from "wagmi";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authApi } from "@/lib/api/auth";
-import { useToast } from "@/components/ui/toast";
+import { useEffect, useRef } from 'react';
+import { useAccount, useDisconnect } from 'wagmi';
+import { useSignMessage } from 'wagmi';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { authApi } from '@/lib/api/auth';
+import { useToast } from '@/components/ui/toast';
 
-export function useWalletAuth() {
+export function useWalletAuth(): void {
   const { address, isConnected, chainId } = useAccount();
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
@@ -18,7 +18,7 @@ export function useWalletAuth() {
   const { mutateAsync: verify } = useMutation({
     mutationFn: authApi.verify,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      void queryClient.invalidateQueries({ queryKey: ['user'] });
     },
   });
 
@@ -31,7 +31,7 @@ export function useWalletAuth() {
     // already authed this address
     if (didAuth.current === address) return;
 
-    async function authenticate() {
+    async function authenticate(): Promise<void> {
       try {
         const { message } = await authApi.getNonce(address!, chainId!);
 
@@ -40,8 +40,8 @@ export function useWalletAuth() {
         await verify({ message, signature });
 
         didAuth.current = address!;
-        successToast("Authentication", "Authentication successful...");
-      } catch (err) {
+        successToast('Authentication', 'Authentication successful...');
+      } catch {
         errorToast(`Authentication", "Authentication failed...`);
         disconnect();
       }

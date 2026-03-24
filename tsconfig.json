@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "paths": {
+      "@vesper/types": ["packages/types/src"],
+      "@vesper/types/*": ["packages/types/src/*"],
+      "@vesper/database": ["packages/database/src"],
+      "@vesper/database/*": ["packages/database/src"]
+    }
+  }
+}

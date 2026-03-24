@@ -2,8 +2,8 @@ import type {
   ContractGenerator,
   ContractParts,
   FeatureMixin,
-} from "@vesper/types"
-import { royaltiesMixin } from "./shared"
+} from '@vesper/types';
+import { royaltiesMixin } from './shared';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ERC-721 Feature Mixins
@@ -14,13 +14,15 @@ const erc721Mintable: FeatureMixin = {
   apply(parts, ctx) {
     parts.events.push({
       source: 'event Minted(address indexed to, uint256 indexed tokenId);',
-    })
+    });
 
-    const uriParam = ctx.hasFeature('uri-storage') ? ', string memory uri' : ''
-    const uriSet = ctx.hasFeature('uri-storage') ? '\n    _setTokenURI(tokenId, uri);' : ''
+    const uriParam = ctx.hasFeature('uri-storage') ? ', string memory uri' : '';
+    const uriSet = ctx.hasFeature('uri-storage')
+      ? '\n    _setTokenURI(tokenId, uri);'
+      : '';
     const revealCheck = ctx.hasFeature('reveal')
       ? '\n    if (!revealed) revert RevealNotComplete();'
-      : ''
+      : '';
 
     parts.functions.push({
       source: `/**
@@ -33,31 +35,31 @@ function safeMint(address to${uriParam}) external onlyOwner {
     _safeMint(to, tokenId);${uriSet}
     emit Minted(to, tokenId);
 }`,
-    })
+    });
 
-    parts.errors.push({ source: 'error ZeroAddress();' })
+    parts.errors.push({ source: 'error ZeroAddress();' });
   },
-}
+};
 
 const erc721Burnable: FeatureMixin = {
   id: 'burnable',
-  apply(parts, _ctx) {
+  apply(parts) {
     parts.imports.push({
       path: '@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol',
       symbol: 'ERC721Burnable',
-    })
-    parts.inheritances.push('ERC721Burnable')
+    });
+    parts.inheritances.push('ERC721Burnable');
   },
-}
+};
 
 const erc721Enumerable: FeatureMixin = {
   id: 'enumerable',
-  apply(parts, _ctx) {
+  apply(parts) {
     parts.imports.push({
       path: '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol',
       symbol: 'ERC721Enumerable',
-    })
-    parts.inheritances.push('ERC721Enumerable')
+    });
+    parts.inheritances.push('ERC721Enumerable');
 
     parts.functions.push({
       source: `/// @inheritdoc ERC721
@@ -86,18 +88,18 @@ function supportsInterface(bytes4 interfaceId)
 {
     return super.supportsInterface(interfaceId);
 }`,
-    })
+    });
   },
-}
+};
 
 const erc721URIStorage: FeatureMixin = {
   id: 'uri-storage',
-  apply(parts, _ctx) {
+  apply(parts) {
     parts.imports.push({
       path: '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol',
       symbol: 'ERC721URIStorage',
-    })
-    parts.inheritances.push('ERC721URIStorage')
+    });
+    parts.inheritances.push('ERC721URIStorage');
 
     parts.functions.push({
       source: `/// @inheritdoc ERC721URIStorage
@@ -119,14 +121,14 @@ function supportsInterface(bytes4 interfaceId)
 {
     return super.supportsInterface(interfaceId);
 }`,
-    })
+    });
   },
-}
+};
 
 const erc721Soulbound: FeatureMixin = {
   id: 'soulbound',
-  apply(parts, _ctx) {
-    parts.errors.push({ source: 'error SoulboundToken();' })
+  apply(parts) {
+    parts.errors.push({ source: 'error SoulboundToken();' });
 
     parts.functions.push({
       source: `/// @dev Prevent all transfers. Tokens can only be minted or burned.
@@ -140,9 +142,9 @@ function _update(address to, uint256 tokenId, address auth)
     if (from != address(0) && to != address(0)) revert SoulboundToken();
     return super._update(to, tokenId, auth);
 }`,
-    })
+    });
   },
-}
+};
 
 const erc721Pausable: FeatureMixin = {
   id: 'pausable',
@@ -150,12 +152,14 @@ const erc721Pausable: FeatureMixin = {
     parts.imports.push({
       path: '@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol',
       symbol: 'ERC721Pausable',
-    })
-    parts.inheritances.push('ERC721Pausable')
+    });
+    parts.inheritances.push('ERC721Pausable');
 
-    const otherOverrides: string[] = []
-    if (ctx.hasFeature('enumerable')) otherOverrides.push('ERC721Enumerable')
-    const overrideList = ['ERC721', 'ERC721Pausable', ...otherOverrides].join(', ')
+    const otherOverrides: string[] = [];
+    if (ctx.hasFeature('enumerable')) otherOverrides.push('ERC721Enumerable');
+    const overrideList = ['ERC721', 'ERC721Pausable', ...otherOverrides].join(
+      ', ',
+    );
 
     parts.functions.push({
       source: `/// @inheritdoc ERC721
@@ -180,43 +184,43 @@ function pause() external onlyOwner {
 function unpause() external onlyOwner {
     _unpause();
 }`,
-    })
+    });
   },
-}
+};
 
 const erc721Reveal: FeatureMixin = {
   id: 'reveal',
-  apply(parts, _ctx) {
+  apply(parts) {
     parts.stateVariables.push({
       visibility: 'private',
       type: 'string',
       name: '_baseTokenURI',
       comment: 'Base URI returned for all tokens before reveal.',
-    })
+    });
     parts.stateVariables.push({
       visibility: 'private',
       type: 'string',
       name: '_preRevealURI',
       comment: 'Placeholder URI returned for all tokens before reveal.',
-    })
+    });
     parts.stateVariables.push({
       visibility: 'public',
       type: 'bool',
       name: 'revealed',
       initialValue: 'false',
       comment: 'Whether the collection has been revealed.',
-    })
+    });
 
     parts.constructorArgs.push({
       type: 'string memory',
       name: '_initialPreRevealURI',
       comment: 'Placeholder URI shown before reveal',
-    })
+    });
 
-    parts.constructorBody.push('_preRevealURI = _initialPreRevealURI;')
+    parts.constructorBody.push('_preRevealURI = _initialPreRevealURI;');
 
-    parts.errors.push({ source: 'error RevealNotComplete();' })
-    parts.events.push({ source: 'event Revealed(string baseURI);' })
+    parts.errors.push({ source: 'error RevealNotComplete();' });
+    parts.events.push({ source: 'event Revealed(string baseURI);' });
 
     parts.functions.push({
       source: `/**
@@ -240,21 +244,21 @@ function tokenURI(uint256 tokenId) public view override returns (string memory) 
     if (!revealed) return _preRevealURI;
     return super.tokenURI(tokenId);
 }`,
-    })
+    });
   },
-}
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ERC-721 Generator
 // ─────────────────────────────────────────────────────────────────────────────
 
-const type  = "erc721"
+const type = 'erc721';
 
 export const erc721Generator: ContractGenerator = {
   type: type,
 
   baseParts(ctx): ContractParts {
-    const { name, symbol = 'NFT', description } = ctx.config
+    const { name, symbol = 'NFT', description } = ctx.config;
 
     return {
       license: ctx.config.license ?? 'MIT',
@@ -281,9 +285,7 @@ export const erc721Generator: ContractGenerator = {
       errors: [],
       modifiers: [],
       constructorArgs: [],
-      constructorNatspec: [
-        `@notice Deploy the ${name} NFT collection.`,
-      ],
+      constructorNatspec: [`@notice Deploy the ${name} NFT collection.`],
       constructorInitializers: [`ERC721("${name}", "${symbol}")`],
       constructorBody: [],
       functions: [
@@ -296,7 +298,7 @@ function totalSupply() external view returns (uint256) {
 }`,
         },
       ],
-    }
+    };
   },
 
   mixins: [
@@ -309,5 +311,4 @@ function totalSupply() external view returns (uint256) {
     { ...royaltiesMixin }, // shared mixin
     erc721Reveal,
   ],
-}
-
+};

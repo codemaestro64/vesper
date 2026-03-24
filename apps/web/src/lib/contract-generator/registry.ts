@@ -1,5 +1,4 @@
-import type { ContractTemplate } from "@vesper/types"
-import { Coins } from "lucide-react"
+import type { ContractTemplate } from '@vesper/types';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Contract Template Registry
@@ -9,7 +8,8 @@ export const contractTemplates: ContractTemplate[] = [
   {
     type: 'erc20',
     label: 'ERC-20 Token',
-    description: 'Fungible token standard for currencies, utility tokens, and governance.',
+    description:
+      'Fungible token standard for currencies, utility tokens, and governance.',
     icon: 'erc20',
     defaultFeatures: [],
     availableFeatures: [
@@ -37,13 +37,15 @@ export const contractTemplates: ContractTemplate[] = [
       {
         id: 'votes',
         label: 'Votes',
-        description: 'Token holders can delegate and use tokens for on-chain governance.',
+        description:
+          'Token holders can delegate and use tokens for on-chain governance.',
         requires: ['permit'],
       },
       {
         id: 'flash-mint',
         label: 'Flash Mint',
-        description: 'Allow flash loans of tokens with zero collateral (ERC-3156).',
+        description:
+          'Allow flash loans of tokens with zero collateral (ERC-3156).',
       },
       {
         id: 'capped',
@@ -62,7 +64,8 @@ export const contractTemplates: ContractTemplate[] = [
   {
     type: 'erc721',
     label: 'ERC-721 NFT',
-    description: 'Non-fungible tokens for unique digital assets, collectibles, and identity.',
+    description:
+      'Non-fungible tokens for unique digital assets, collectibles, and identity.',
     icon: 'erc721',
     defaultFeatures: ['uri-storage'],
     availableFeatures: [
@@ -91,12 +94,14 @@ export const contractTemplates: ContractTemplate[] = [
       {
         id: 'royalties',
         label: 'Royalties (EIP-2981)',
-        description: 'Declare a royalty recipient and percentage for secondary sales.',
+        description:
+          'Declare a royalty recipient and percentage for secondary sales.',
       },
       {
         id: 'soulbound',
         label: 'Soulbound',
-        description: 'Non-transferable tokens — minted to an address and locked forever.',
+        description:
+          'Non-transferable tokens — minted to an address and locked forever.',
         conflicts: ['burnable'],
       },
       {
@@ -107,7 +112,8 @@ export const contractTemplates: ContractTemplate[] = [
       {
         id: 'reveal',
         label: 'Delayed Reveal',
-        description: 'Pre-reveal placeholder URI that switches to real metadata after reveal.',
+        description:
+          'Pre-reveal placeholder URI that switches to real metadata after reveal.',
       },
     ],
   },
@@ -115,7 +121,8 @@ export const contractTemplates: ContractTemplate[] = [
   {
     type: 'erc1155',
     label: 'Multi-Token',
-    description: 'Efficient multi-token standard for both fungible and non-fungible tokens.',
+    description:
+      'Efficient multi-token standard for both fungible and non-fungible tokens.',
     icon: 'erc1155',
     defaultFeatures: [],
     availableFeatures: [
@@ -157,7 +164,8 @@ export const contractTemplates: ContractTemplate[] = [
       {
         id: 'lock-period',
         label: 'Lock Period',
-        description: 'Tokens are locked for a minimum duration before withdrawal.',
+        description:
+          'Tokens are locked for a minimum duration before withdrawal.',
       },
       {
         id: 'tiered',
@@ -167,12 +175,14 @@ export const contractTemplates: ContractTemplate[] = [
       {
         id: 'compounding',
         label: 'Auto-compound',
-        description: 'Automatically reinvest earned rewards back into the stake.',
+        description:
+          'Automatically reinvest earned rewards back into the stake.',
       },
       {
         id: 'emergency-withdraw',
         label: 'Emergency Withdraw',
-        description: 'Allow users to withdraw principal with a penalty fee in emergencies.',
+        description:
+          'Allow users to withdraw principal with a penalty fee in emergencies.',
       },
       {
         id: 'referral',
@@ -197,7 +207,8 @@ export const contractTemplates: ContractTemplate[] = [
       {
         id: 'quorum',
         label: 'Quorum Fraction',
-        description: 'Require a minimum percentage of total supply to participate.',
+        description:
+          'Require a minimum percentage of total supply to participate.',
       },
       {
         id: 'delegation',
@@ -207,7 +218,8 @@ export const contractTemplates: ContractTemplate[] = [
       {
         id: 'veto',
         label: 'Veto Guardian',
-        description: 'A guardian address can veto passed proposals within the timelock window.',
+        description:
+          'A guardian address can veto passed proposals within the timelock window.',
       },
     ],
   },
@@ -215,7 +227,8 @@ export const contractTemplates: ContractTemplate[] = [
   {
     type: 'multisig',
     label: 'Multi-Sig Wallet',
-    description: 'M-of-N wallet requiring multiple owner signatures per transaction.',
+    description:
+      'M-of-N wallet requiring multiple owner signatures per transaction.',
     icon: 'multisig',
     defaultFeatures: [],
     availableFeatures: [
@@ -227,7 +240,8 @@ export const contractTemplates: ContractTemplate[] = [
       {
         id: 'daily-limit',
         label: 'Daily Limit',
-        description: 'Allow small transactions below a daily limit without full confirmation.',
+        description:
+          'Allow small transactions below a daily limit without full confirmation.',
       },
       {
         id: 'recovery',
@@ -241,8 +255,8 @@ export const contractTemplates: ContractTemplate[] = [
       },
     ],
   },
-]
+];
 
 export const templatesByType = Object.fromEntries(
-  contractTemplates.map((t) => [t.type, t])
-) as Record<string, ContractTemplate>
+  contractTemplates.map((t) => [t.type, t]),
+) as Record<string, ContractTemplate>;

@@ -1,60 +1,80 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { contractApi } from "@/lib/api/contract";
-import { CreateContractRequest } from "@vesper/types";
-import { useToast } from "@/components/ui/toast";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  UseQueryResult,
+  UseMutationResult,
+} from '@tanstack/react-query';
+import { contractApi } from '@/lib/api/contract';
+import { CreateContractRequest, ContractResponse } from '@vesper/types';
+import { useToast } from '@/components/ui/toast';
 
-// Fetch a single contract by ID
-export function useContract(id?: string) {
+/**
+ * Fetch a single contract by ID
+ * Returns a QueryResult containing the ContractResponse or an Error
+ */
+export function useContract(
+  id?: string,
+): UseQueryResult<ContractResponse, Error> {
   return useQuery({
-    queryKey: ["contract", id],
+    queryKey: ['contract', id],
+    // Ensures it won't run without the ID
     queryFn: () => contractApi.getById(id!),
-    enabled: !!id, // Only run if ID is provided
-    retry: 1,      // Don't spam the server if 404
+    enabled: !!id,
+    retry: 1,
   });
 }
 
-// Save a contract
-export function useCreateContract() {
+/**
+ * Interface for the return value of useCreateContract
+ */
+interface CreateContractHook {
+  createContract: (data: CreateContractRequest) => void;
+  isCreating: boolean;
+  isCreateError: boolean;
+}
+
+export function useCreateContract(): CreateContractHook {
   const queryClient = useQueryClient();
   const { errorToast, successToast } = useToast();
 
-
-  const { mutate, isPending, isError, } = useMutation({
+  const { mutate, isPending, isError } = useMutation({
     mutationFn: (data: CreateContractRequest) => contractApi.save(data),
-    onSuccess: (newContract) => {
-      // Refresh the list of contracts
-      queryClient.invalidateQueries({ queryKey: ["contracts"] });
+    onSuccess: (newContract: ContractResponse) => {
+      void queryClient.invalidateQueries({ queryKey: ['contracts'] });
       successToast(`Contract "${newContract.name}" saved.`);
     },
-    onError: (err: any) => {
-      errorToast(err.message || "Failed to save contract.");
+    onError: (err: Error) => {
+      errorToast(err.message || 'Failed to save contract.');
     },
   });
 
   return {
     createContract: mutate,
     isCreating: isPending,
-    isCreateError:isError
-  }
+    isCreateError: isError,
+  };
 }
 
-// Delete a contract
-export function useDeleteContract() {
+/**
+ * Delete a contract
+ * Returns the full MutationResult to give the component maximum control
+ */
+export function useDeleteContract(): UseMutationResult<void, Error, string> {
   const queryClient = useQueryClient();
   const { errorToast, successToast } = useToast();
 
   return useMutation({
     mutationFn: (id: string) => contractApi.delete(id),
     onSuccess: (_, deletedId) => {
-      // Update cache: remove the item from the list without a full refetch
-      queryClient.invalidateQueries({ queryKey: ["contracts"] });
-      // remove the specific query for this contract
-      queryClient.removeQueries({ queryKey: ["contract", deletedId] });
-      
-      successToast("Contract deleted successfully.");
+      // Use 'void' for floating promises to keep the linter happy
+      void queryClient.invalidateQueries({ queryKey: ['contracts'] });
+      queryClient.removeQueries({ queryKey: ['contract', deletedId] });
+
+      successToast('Contract deleted successfully.');
     },
-    onError: (err: any) => {
-      errorToast(err.message || "Could not delete contract.");
+    onError: (err: Error) => {
+      errorToast(err.message || 'Could not delete contract.');
     },
   });
 }

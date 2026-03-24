@@ -1,21 +1,28 @@
-'use client'
+'use client';
 
-import { motion } from 'framer-motion'
-import type { ContractTemplate } from '@vesper/types'
-import { contractTemplates } from '@/lib/contract-generator'
-import TokenIcon, { type IconName } from './TokenIcon'
-import SelectableCard from '@/components/ui/SelectableCard'
+import { motion } from 'framer-motion';
+import type { ContractTemplate } from '@vesper/types';
+import { contractTemplates } from '@/lib/contract-generator';
+import TokenIcon, { type IconName } from './TokenIcon';
+import SelectableCard from '@/components/ui/SelectableCard';
 
 interface TemplateSelectorProps {
-  selected: ContractTemplate | null
-  onSelect: (template: ContractTemplate) => void
+  selected: ContractTemplate | null;
+  onSelect: (template: ContractTemplate) => void;
 }
 
-export default function TemplateSelector({ selected, onSelect }: TemplateSelectorProps) {
+export default function TemplateSelector({
+  selected,
+  onSelect,
+}: TemplateSelectorProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-3" role="radiogroup" aria-label="Contract template">
+    <div
+      className="grid grid-cols-2 md:grid-cols-3 gap-3"
+      role="radiogroup"
+      aria-label="Contract template"
+    >
       {contractTemplates.map((template, i) => {
-        const isSelected = selected?.type === template.type
+        const isSelected = selected?.type === template.type;
         return (
           <motion.div
             key={template.type}
@@ -53,8 +60,8 @@ export default function TemplateSelector({ selected, onSelect }: TemplateSelecto
               />
             )}
           </motion.div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

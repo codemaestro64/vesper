@@ -1,5 +1,5 @@
-import { ContractType } from "@vesper/types";
-import { createContext, useContext, ReactNode } from "react";
+import { ContractType } from '@vesper/types';
+import { createContext, useContext, ReactNode } from 'react';
 
 interface EditorContractContextType {
   code: string;
@@ -15,14 +15,26 @@ interface EditorContractContextType {
   onDeploy: () => void;
 }
 
-const EditorContractContext = createContext<EditorContractContextType | null>(null);
+const EditorContractContext = createContext<EditorContractContextType | null>(
+  null,
+);
 
-export function EditorContractProvider({ children, value }: { children: ReactNode, value: EditorContractContextType }) {
-  return <EditorContractContext.Provider value={value}>{children}</EditorContractContext.Provider>;
+export function EditorContractProvider({
+  children,
+  value,
+}: {
+  children: ReactNode;
+  value: EditorContractContextType;
+}) {
+  return (
+    <EditorContractContext.Provider value={value}>
+      {children}
+    </EditorContractContext.Provider>
+  );
 }
 
 export const useEditorContract = () => {
   const context = useContext(EditorContractContext);
-  if (!context) throw new Error("useEditor must be used within EditorProvider");
+  if (!context) throw new Error('useEditor must be used within EditorProvider');
   return context;
 };

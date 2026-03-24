@@ -1,4 +1,4 @@
-export type ToastVariant = "success" | "warning" | "error";
+export type ToastVariant = 'success' | 'warning' | 'error';
 
 export interface Toast {
   id: string;
@@ -9,7 +9,7 @@ export interface Toast {
 }
 
 export interface ToastContextValue {
-  toast: (opts: Omit<Toast, "id">) => void;
+  toast: (opts: Omit<Toast, 'id'>) => void;
   successToast: (title: string, description?: string) => void;
   warningToast: (title: string, description?: string) => void;
   errorToast: (title: string, description?: string) => void;
