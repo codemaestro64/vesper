@@ -1,11 +1,12 @@
 {
   "name": "@vesper/api",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Vesper API – no-code smart contract generation and token management",
+  "author": "Onyekachi Michael Ugwueze <mseze.dev@gmail.com>",
   "private": true,
   "type": "commonjs",
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "keywords": ["vesper", "smart-contract", "no-code", "web3", "blockchain", "solidity"],
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

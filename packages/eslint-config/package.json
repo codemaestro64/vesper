@@ -1,7 +1,8 @@
 {
   "name": "@vesper/eslint-config",
   "version": "1.0.0",
-  "description": "",
+  "description": "Shared ESLint configuration for Vesper monorepo",
+  "author": "Onyekachi Michael Ugwueze <mseze.dev@gmail.com>",
   "type": "module",
   "exports": {
     "./base": "./base.js",
@@ -10,9 +11,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["vesper", "eslint", "lint", "config"],
+  "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.39.3",
     "eslint": "^9.18.0",

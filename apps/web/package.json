@@ -2,6 +2,9 @@
   "name": "@vesper/web",
   "version": "0.1.0",
   "private": true,
+  "description": "Frontend for Vesper – no-code smart contract generation and token management",
+  "author": "Onyekachi Michael Ugwueze <mseze.dev@gmail.com>",
+  "keywords": ["vesper", "smart-contract", "no-code", "web3", "blockchain", "solidity"],
   "scripts": {
     "dev": "next dev",
     "build": "next build",

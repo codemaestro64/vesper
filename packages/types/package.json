@@ -1,7 +1,8 @@
 {
   "name": "@vesper/types",
   "version": "1.0.0",
-  "description": "",
+  "description": "Shared TypeScript types and interfaces for Vesper monorepo",
+  "author": "Onyekachi Michael Ugwueze <mseze.dev@gmail.com>",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "commonjs",
@@ -17,9 +18,8 @@
     "lint": "eslint \"src/**/*.ts\" --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["vesper", "types", "typescript"],
+  "license": "MIT",
   "devDependencies": {
     "@vesper/eslint-config": "workspace:*"
   },
