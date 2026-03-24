@@ -1,7 +1,8 @@
 {
   "name": "@vesper/eslint-config",
   "version": "1.0.0",
-  "description": "",
+  "description": "Shared ESLint configuration for Vesper monorepo",
+  "author": "Onyekachi Michael Ugwueze <mseze.dev@gmail.com>",
   "type": "module",
   "exports": {
     "./base": "./base.js",

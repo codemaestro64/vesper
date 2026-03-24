@@ -1,7 +1,8 @@
 {
   "name": "@vesper/database",
   "version": "1.0.0",
-  "description": "",
+  "description": "Shared database schema, migrations, and Prisma client for Vesper",
+  "author": "Onyekachi Michael Ugwueze <mseze.dev@gmail.com>",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
   "type": "commonjs",

@@ -1,7 +1,8 @@
 {
   "name": "@vesper/types",
   "version": "1.0.0",
-  "description": "",
+  "description": "Shared TypeScript types and interfaces for Vesper monorepo",
+  "author": "Onyekachi Michael Ugwueze <mseze.dev@gmail.com>",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "commonjs",
