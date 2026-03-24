@@ -181,14 +181,14 @@ export enum ContractStatus {
 export interface CreateContractRequest {
   contractType: ContractType;
   name: string;
-  symbol: string | undefined;
-  initialSupply: number | undefined;
-  decimals: number | undefined;
-  features: string[] | undefined;
-  description: string | undefined;
-  contractAddress: string | undefined;
-  abi: string | undefined;
-  network: string | undefined;
+  symbol?: string;
+  initialSupply?: number;
+  decimals?: number;
+  features?: string[];
+  description?: string;
+  contractAddress?: string;
+  abi?: string;
+  network?: string;
 }
 
 export interface UpdateContractRequest {
