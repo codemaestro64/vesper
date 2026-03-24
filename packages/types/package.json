@@ -18,9 +18,8 @@
     "lint": "eslint \"src/**/*.ts\" --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["vesper", "types", "typescript"],
+  "license": "MIT",
   "devDependencies": {
     "@vesper/eslint-config": "workspace:*"
   },

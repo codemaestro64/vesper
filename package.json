@@ -2,7 +2,8 @@
   "name": "vesper",
   "private": true,
   "description": "Vesper is a high-performance free smart contract generator.",
-  "author": "Onyekachi Michael Ugwueze mseze.dev@gmail.com",
+  "author": "Onyekachi Michael Ugwueze <mseze.dev@gmail.com>",
+  "license": "MIT",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",

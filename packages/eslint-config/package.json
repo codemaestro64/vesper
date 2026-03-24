@@ -11,9 +11,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["vesper", "eslint", "lint", "config"],
+  "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.39.3",
     "eslint": "^9.18.0",
