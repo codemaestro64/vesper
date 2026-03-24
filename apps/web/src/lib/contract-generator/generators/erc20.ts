@@ -2,7 +2,7 @@ import type {
   ContractGenerator,
   ContractParts,
   FeatureMixin,
-} from "@vesper/types"
+} from '@vesper/types';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ERC-20 Feature Mixins
@@ -10,15 +10,15 @@ import type {
 
 const erc20Burnable: FeatureMixin = {
   id: 'burnable',
-  apply(parts, _ctx) {
+  apply(parts) {
     parts.imports.push({
       path: '@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol',
       symbol: 'ERC20Burnable',
-    })
-    parts.inheritances.push('ERC20Burnable')
+    });
+    parts.inheritances.push('ERC20Burnable');
     // ERC20Burnable adds burn(amount) and burnFrom(account, amount) automatically
   },
-}
+};
 
 const erc20Mintable: FeatureMixin = {
   id: 'mintable',
@@ -34,9 +34,9 @@ function mint(address to, uint256 amount) external onlyOwner {
     ${ctx.hasFeature('capped') ? 'if (totalSupply() + amount > cap()) revert CapExceeded();' : ''}
     _mint(to, amount);
 }`,
-    })
+    });
   },
-}
+};
 
 const erc20Permit: FeatureMixin = {
   id: 'permit',
@@ -44,11 +44,11 @@ const erc20Permit: FeatureMixin = {
     parts.imports.push({
       path: '@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol',
       symbol: 'ERC20Permit',
-    })
-    parts.inheritances.push('ERC20Permit')
-    parts.constructorInitializers.push(`ERC20Permit("${ctx.config.name}")`)
+    });
+    parts.inheritances.push('ERC20Permit');
+    parts.constructorInitializers.push(`ERC20Permit("${ctx.config.name}")`);
   },
-}
+};
 
 const erc20Votes: FeatureMixin = {
   id: 'votes',
@@ -56,8 +56,8 @@ const erc20Votes: FeatureMixin = {
     parts.imports.push({
       path: '@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol',
       symbol: 'ERC20Votes',
-    })
-    parts.inheritances.push('ERC20Votes')
+    });
+    parts.inheritances.push('ERC20Votes');
 
     // ERC20Votes requires _update override to call both ERC20 and ERC20Votes
     parts.functions.push({
@@ -68,7 +68,7 @@ function _update(address from, address to, uint256 value)
 {
     super._update(from, to, value);
 }`,
-    })
+    });
 
     parts.functions.push({
       source: `/// @inheritdoc ERC20Permit
@@ -80,18 +80,18 @@ function nonces(address owner)
 {
     return super.nonces(owner);
 }`,
-    })
+    });
   },
-}
+};
 
 const erc20FlashMint: FeatureMixin = {
   id: 'flash-mint',
-  apply(parts, _ctx) {
+  apply(parts) {
     parts.imports.push({
       path: '@openzeppelin/contracts/token/ERC20/extensions/ERC20FlashMint.sol',
       symbol: 'ERC20FlashMint',
-    })
-    parts.inheritances.push('ERC20FlashMint')
+    });
+    parts.inheritances.push('ERC20FlashMint');
 
     parts.stateVariables.push({
       visibility: 'public',
@@ -99,7 +99,7 @@ const erc20FlashMint: FeatureMixin = {
       name: 'flashFeeAmount',
       initialValue: '0',
       comment: 'Fee charged per flash loan (in wei). Zero by default.',
-    })
+    });
 
     parts.functions.push({
       source: `/**
@@ -120,28 +120,28 @@ function flashFee(address token, uint256 /*amount*/)
     if (token != address(this)) revert UnsupportedToken();
     return flashFeeAmount;
 }`,
-    })
+    });
 
-    parts.errors.push({ source: 'error UnsupportedToken();' })
+    parts.errors.push({ source: 'error UnsupportedToken();' });
   },
-}
+};
 
 const erc20Capped: FeatureMixin = {
   id: 'capped',
-  apply(parts, _ctx) {
+  apply(parts) {
     parts.imports.push({
       path: '@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol',
       symbol: 'ERC20Capped',
-    })
-    parts.inheritances.push('ERC20Capped')
+    });
+    parts.inheritances.push('ERC20Capped');
 
     parts.constructorArgs.push({
       type: 'uint256',
       name: '_cap',
       comment: 'Maximum token supply (in wei)',
-    })
+    });
 
-    parts.constructorInitializers.push('ERC20Capped(_cap)')
+    parts.constructorInitializers.push('ERC20Capped(_cap)');
 
     // ERC20Capped requires _update override
     parts.functions.push({
@@ -152,49 +152,50 @@ function _update(address from, address to, uint256 value)
 {
     super._update(from, to, value);
 }`,
-    })
+    });
 
-    parts.errors.push({ source: 'error CapExceeded();' })
+    parts.errors.push({ source: 'error CapExceeded();' });
   },
-}
+};
 
 const erc20Taxable: FeatureMixin = {
   id: 'taxable',
-  apply(parts, _ctx) {
+  apply(parts) {
     parts.stateVariables.push({
       visibility: 'public',
       type: 'uint256',
       name: 'taxBps',
       initialValue: '100',
       comment: 'Transfer tax in basis points (100 = 1%). Max 1000.',
-    })
+    });
     parts.stateVariables.push({
       visibility: 'public',
       type: 'address',
       name: 'taxRecipient',
       comment: 'Address that receives collected transfer taxes.',
-    })
+    });
 
     parts.constructorArgs.push({
       type: 'address',
       name: '_taxRecipient',
       comment: 'Initial address to receive transfer taxes',
-    })
+    });
 
     parts.constructorBody.push(
       'if (_taxRecipient == address(0)) revert ZeroAddress();',
       'taxRecipient = _taxRecipient;',
-    )
+    );
 
-    parts.errors.push({ source: 'error ZeroAddress();' })
-    parts.errors.push({ source: 'error TaxTooHigh();' })
+    parts.errors.push({ source: 'error ZeroAddress();' });
+    parts.errors.push({ source: 'error TaxTooHigh();' });
 
     parts.events.push({
       source: 'event TaxUpdated(uint256 oldBps, uint256 newBps);',
-    })
+    });
     parts.events.push({
-      source: 'event TaxRecipientUpdated(address indexed oldRecipient, address indexed newRecipient);',
-    })
+      source:
+        'event TaxRecipientUpdated(address indexed oldRecipient, address indexed newRecipient);',
+    });
 
     parts.functions.push({
       source: `/**
@@ -227,9 +228,9 @@ function _update(address from, address to, uint256 value) internal override {
         super._update(from, to, value);
     }
 }`,
-    })
+    });
   },
-}
+};
 
 const erc20PausableUpdate: FeatureMixin = {
   id: 'pausable',
@@ -238,8 +239,8 @@ const erc20PausableUpdate: FeatureMixin = {
     parts.imports.push({
       path: '@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol',
       symbol: 'ERC20Pausable',
-    })
-    parts.inheritances.push('ERC20Pausable')
+    });
+    parts.inheritances.push('ERC20Pausable');
 
     // Only add _update override if votes isn't also enabled (votes handles it)
     if (!ctx.hasFeature('votes')) {
@@ -251,7 +252,7 @@ function _update(address from, address to, uint256 value)
 {
     super._update(from, to, value);
 }`,
-      })
+      });
     }
 
     parts.functions.push({
@@ -268,21 +269,21 @@ function pause() external onlyOwner {
 function unpause() external onlyOwner {
     _unpause();
 }`,
-    })
+    });
   },
-}
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ERC-20 Generator
 // ─────────────────────────────────────────────────────────────────────────────
 
-const type  = "erc20"
+const type = 'erc20';
 
 export const erc20Generator: ContractGenerator = {
   type: type,
   baseParts(ctx): ContractParts {
-    const { name, symbol = 'TKN', description } = ctx.config
-    const initialSupply = '1_000_000'
+    const { name, symbol = 'TKN', description } = ctx.config;
+    const initialSupply = '1_000_000';
 
     return {
       license: ctx.config.license ?? 'MIT',
@@ -320,7 +321,7 @@ function decimals() public pure override returns (uint8) {
 }`,
         },
       ],
-    }
+    };
   },
 
   mixins: [
@@ -333,5 +334,4 @@ function decimals() public pure override returns (uint8) {
     erc20Capped,
     erc20Taxable,
   ],
-}
-
+};

@@ -1,9 +1,9 @@
-import type { ReactNode, ButtonHTMLAttributes } from 'react'
-import { cn } from '@/lib/utils'
+import type { ReactNode, ButtonHTMLAttributes } from 'react';
+import { cn } from '@/lib/utils';
 
 interface IconToolbarButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  label: string
-  children: ReactNode
+  label: string;
+  children: ReactNode;
 }
 
 /**
@@ -24,11 +24,11 @@ export default function IconToolbarButton({
       className={cn(
         'p-1.5 rounded-md transition-colors',
         'text-muted-foreground hover:text-foreground hover:bg-muted/50',
-        className
+        className,
       )}
       {...props}
     >
       {children}
     </button>
-  )
+  );
 }

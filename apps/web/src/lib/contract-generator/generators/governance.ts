@@ -2,37 +2,62 @@ import type {
   ConstructorArg,
   ContractGenerator,
   ContractParts,
-} from "@vesper/types"
+} from '@vesper/types';
 
 // ═════════════════════════════════════════════════════════════════════════════
-// Governance
+// Governance Generator
 // ═════════════════════════════════════════════════════════════════════════════
-const type  = "governance"
+const type = 'governance';
 
 export const governanceGenerator: ContractGenerator = {
-  type: type,
+  type,
 
   baseParts(ctx): ContractParts {
-    const { name, description, features } = ctx.config
-    const hasTimelock = features.includes('timelock')
-    const hasQuorum = features.includes('quorum')
+    const { name, description, features } = ctx.config;
+    const hasTimelock = features.includes('timelock');
+    const hasQuorum = features.includes('quorum');
 
+    // Standard Imports
     const imports = [
-      { path: '@openzeppelin/contracts/governance/Governor.sol', symbol: 'Governor' },
-      { path: '@openzeppelin/contracts/governance/extensions/GovernorSettings.sol', symbol: 'GovernorSettings' },
-      { path: '@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol', symbol: 'GovernorCountingSimple' },
-      { path: '@openzeppelin/contracts/governance/extensions/GovernorVotes.sol', symbol: 'GovernorVotes' },
-    ]
+      {
+        path: '@openzeppelin/contracts/governance/Governor.sol',
+        symbol: 'Governor',
+      },
+      {
+        path: '@openzeppelin/contracts/governance/extensions/GovernorSettings.sol',
+        symbol: 'GovernorSettings',
+      },
+      {
+        path: '@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol',
+        symbol: 'GovernorCountingSimple',
+      },
+      {
+        path: '@openzeppelin/contracts/governance/extensions/GovernorVotes.sol',
+        symbol: 'GovernorVotes',
+      },
+    ];
 
     if (hasTimelock) {
-      imports.push({ path: '@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol', symbol: 'GovernorTimelockControl' })
-      imports.push({ path: '@openzeppelin/contracts/governance/TimelockController.sol', symbol: 'TimelockController' })
+      imports.push(
+        {
+          path: '@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol',
+          symbol: 'GovernorTimelockControl',
+        },
+        {
+          path: '@openzeppelin/contracts/governance/TimelockController.sol',
+          symbol: 'TimelockController',
+        },
+      );
     }
 
     if (hasQuorum) {
-      imports.push({ path: '@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol', symbol: 'GovernorVotesQuorumFraction' })
+      imports.push({
+        path: '@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol',
+        symbol: 'GovernorVotesQuorumFraction',
+      });
     }
 
+    // Inheritances & Initializers
     const inheritances = [
       'Governor',
       'GovernorSettings',
@@ -40,7 +65,7 @@ export const governanceGenerator: ContractGenerator = {
       'GovernorVotes',
       ...(hasQuorum ? ['GovernorVotesQuorumFraction'] : []),
       ...(hasTimelock ? ['GovernorTimelockControl'] : []),
-    ]
+    ];
 
     const baseInits = [
       `Governor("${name}")`,
@@ -48,21 +73,39 @@ export const governanceGenerator: ContractGenerator = {
       'GovernorVotes(_token)',
       ...(hasQuorum ? ['GovernorVotesQuorumFraction(4) /* 4% quorum */'] : []),
       ...(hasTimelock ? ['GovernorTimelockControl(_timelock)'] : []),
-    ]
+    ];
 
+    // Constructor Arguments
     const constructorArgs: ConstructorArg[] = [
-      { type: 'IVotes', name: '_token', comment: 'Governance token with vote delegation' },
-    ]
+      {
+        type: 'IVotes',
+        name: '_token',
+        comment: 'Governance token with vote delegation',
+      },
+    ];
     if (hasTimelock) {
-      constructorArgs.push({ type: 'TimelockController', name: '_timelock', comment: 'Timelock controller contract' })
+      constructorArgs.push({
+        type: 'TimelockController',
+        name: '_timelock',
+        comment: 'Timelock controller contract',
+      });
     }
 
-    const overrideList = [
+    // Generate Override Strings (Solidity Diamond Problem Resolution)
+    // Most functions override Governor + Settings + optionally Quorum/Timelock
+    const standardOverrides = [
       'Governor',
       'GovernorSettings',
       ...(hasQuorum ? ['GovernorVotesQuorumFraction'] : []),
       ...(hasTimelock ? ['GovernorTimelockControl'] : []),
-    ]
+    ].join(', ');
+
+    const quorumOverrides = [
+      'Governor',
+      ...(hasQuorum ? ['GovernorVotesQuorumFraction'] : []),
+    ].join(', ');
+
+    const timelockOverrides = 'Governor, GovernorTimelockControl';
 
     return {
       license: ctx.config.license ?? 'MIT',
@@ -71,7 +114,8 @@ export const governanceGenerator: ContractGenerator = {
       inheritances,
       natspecTitle: name,
       natspecNotice: description ?? `${name} — on-chain DAO governance.`,
-      natspecDev: 'Generated by Vesper. Adjust votingDelay/votingPeriod/quorum before deployment.',
+      natspecDev:
+        'Generated by Vesper. Adjust votingDelay/votingPeriod/quorum before deployment.',
       stateVariables: [],
       events: [],
       errors: [],
@@ -85,89 +129,59 @@ export const governanceGenerator: ContractGenerator = {
           source: `// ── Required overrides ───────────────────────────────────
 
 /// @inheritdoc Governor
-function votingDelay() public view override(Governor, GovernorSettings) returns (uint256) {
+function votingDelay() public view override(${standardOverrides}) returns (uint256) {
     return super.votingDelay();
 }
 
 /// @inheritdoc Governor
-function votingPeriod() public view override(Governor, GovernorSettings) returns (uint256) {
+function votingPeriod() public view override(${standardOverrides}) returns (uint256) {
     return super.votingPeriod();
 }
 
 /// @inheritdoc Governor
-function quorum(uint256 blockNumber)
-    public
-    view
-    override(${hasQuorum ? 'Governor, GovernorVotesQuorumFraction' : 'Governor'})
-    returns (uint256)
-{
+function quorum(uint256 blockNumber) public view override(${quorumOverrides}) returns (uint256) {
     return super.quorum(blockNumber);
 }
 
 /// @inheritdoc Governor
-function proposalThreshold()
-    public
-    view
-    override(Governor, GovernorSettings)
-    returns (uint256)
-{
+function proposalThreshold() public view override(${standardOverrides}) returns (uint256) {
     return super.proposalThreshold();
-}${hasTimelock ? `
+}${
+            hasTimelock
+              ? `
 
 /// @inheritdoc Governor
-function state(uint256 proposalId)
-    public
-    view
-    override(Governor, GovernorTimelockControl)
-    returns (ProposalState)
-{
+function state(uint256 proposalId) public view override(${timelockOverrides}) returns (ProposalState) {
     return super.state(proposalId);
 }
 
 /// @inheritdoc Governor
-function _queueOperations(
-    uint256 proposalId,
-    address[] memory targets,
-    uint256[] memory values,
-    bytes[] memory calldatas,
-    bytes32 descriptionHash
-) internal override(Governor, GovernorTimelockControl) returns (uint48) {
+function _queueOperations(uint256 proposalId, address[] memory targets, uint256[] memory values, bytes[] memory calldatas, bytes32 descriptionHash) 
+    internal override(${timelockOverrides}) returns (uint48) {
     return super._queueOperations(proposalId, targets, values, calldatas, descriptionHash);
 }
 
 /// @inheritdoc Governor
-function _executeOperations(
-    uint256 proposalId,
-    address[] memory targets,
-    uint256[] memory values,
-    bytes[] memory calldatas,
-    bytes32 descriptionHash
-) internal override(Governor, GovernorTimelockControl) {
+function _executeOperations(uint256 proposalId, address[] memory targets, uint256[] memory values, bytes[] memory calldatas, bytes32 descriptionHash) 
+    internal override(${timelockOverrides}) {
     super._executeOperations(proposalId, targets, values, calldatas, descriptionHash);
 }
 
 /// @inheritdoc Governor
-function _cancel(
-    address[] memory targets,
-    uint256[] memory values,
-    bytes[] memory calldatas,
-    bytes32 descriptionHash
-) internal override(Governor, GovernorTimelockControl) returns (uint256) {
+function _cancel(address[] memory targets, uint256[] memory values, bytes[] memory calldatas, bytes32 descriptionHash) 
+    internal override(${timelockOverrides}) returns (uint256) {
     return super._cancel(targets, values, calldatas, descriptionHash);
 }
 
 /// @inheritdoc Governor
-function _executor()
-    internal
-    view
-    override(Governor, GovernorTimelockControl)
-    returns (address)
-{
+function _executor() internal view override(${timelockOverrides}) returns (address) {
     return super._executor();
-}` : ''}`,
+}`
+              : ''
+          }`,
         },
       ],
-    }
+    };
   },
   mixins: [],
-}
+};

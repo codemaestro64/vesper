@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { createContext, useCallback, useContext, useState } from "react";
-import { AnimatePresence } from "framer-motion";
-import { ToastItem } from "./toast";
-import type { Toast, ToastContextValue } from "./types";
+import { createContext, useCallback, useContext, useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { ToastItem } from './toast';
+import type { Toast, ToastContextValue } from './types';
 
 const ToastContext = createContext<ToastContextValue | null>(null);
 
@@ -14,28 +14,28 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  const toast = useCallback((opts: Omit<Toast, "id">) => {
+  const toast = useCallback((opts: Omit<Toast, 'id'>) => {
     const id = Math.random().toString(36).slice(2);
     setToasts((prev) => [...prev, { ...opts, id }]);
   }, []);
 
   const successToast = useCallback(
     (title: string, description?: string) => {
-      toast({ variant: "success", title, description });
+      toast({ variant: 'success', title, description });
     },
     [toast],
   );
 
   const warningToast = useCallback(
     (title: string, description?: string) => {
-      toast({ variant: "warning", title, description });
+      toast({ variant: 'warning', title, description });
     },
     [toast],
   );
 
   const errorToast = useCallback(
     (title: string, description?: string) => {
-      toast({ variant: "error", title, description });
+      toast({ variant: 'error', title, description });
     },
     [toast],
   );
@@ -59,6 +59,6 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
 export function useToast(): ToastContextValue {
   const ctx = useContext(ToastContext);
-  if (!ctx) throw new Error("useToast must be used within ToastProvider");
+  if (!ctx) throw new Error('useToast must be used within ToastProvider');
   return ctx;
 }

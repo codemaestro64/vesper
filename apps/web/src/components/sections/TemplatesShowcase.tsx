@@ -1,37 +1,41 @@
-'use client'
+'use client';
 
-import { motion, useInView } from 'framer-motion'
-import { useRef, useState } from 'react'
-import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
-import { contractTemplates } from '@/lib/contract-generator'
-import TokenIcon, { type IconName } from '@/components/TokenIcon'
+import { motion, useInView } from 'framer-motion';
+import { useRef, useState } from 'react';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { contractTemplates } from '@/lib/contract-generator';
+import TokenIcon, { type IconName } from '@/components/TokenIcon';
 
 const CARD_ACCENTS: Record<string, string> = {
-  erc20:      'hsl(174 72% 50%)',
-  erc721:     'hsl(38 92% 60%)',
-  erc1155:    'hsl(262 80% 65%)',
-  staking:    'hsl(199 89% 55%)',
+  erc20: 'hsl(174 72% 50%)',
+  erc721: 'hsl(38 92% 60%)',
+  erc1155: 'hsl(262 80% 65%)',
+  staking: 'hsl(199 89% 55%)',
   governance: 'hsl(142 70% 50%)',
-  multisig:   'hsl(340 80% 60%)',
-}
+  multisig: 'hsl(340 80% 60%)',
+};
 
 const CARD_TAGS: Record<string, string[]> = {
-  erc20:      ['fungible', 'transferable', 'mintable'],
-  erc721:     ['unique', 'collectible', 'nft'],
-  erc1155:    ['multi-token', 'batch', 'efficient'],
-  staking:    ['yield', 'lock', 'rewards'],
+  erc20: ['fungible', 'transferable', 'mintable'],
+  erc721: ['unique', 'collectible', 'nft'],
+  erc1155: ['multi-token', 'batch', 'efficient'],
+  staking: ['yield', 'lock', 'rewards'],
   governance: ['voting', 'dao', 'timelock'],
-  multisig:   ['m-of-n', 'safe', 'multisig'],
-}
+  multisig: ['m-of-n', 'safe', 'multisig'],
+};
 
 export default function TemplatesShowcase() {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
-  const [hoveredType, setHoveredType] = useState<string | null>(null)
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const [hoveredType, setHoveredType] = useState<string | null>(null);
 
   return (
-    <section id="templates" ref={ref} className="relative py-28 px-4 sm:px-6 overflow-hidden">
+    <section
+      id="templates"
+      ref={ref}
+      className="relative py-28 px-4 sm:px-6 overflow-hidden"
+    >
       {/* background radial */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute bottom-0 right-0 w-[500px] h-[400px] bg-primary/3 rounded-full blur-[100px]" />
@@ -46,9 +50,12 @@ export default function TemplatesShowcase() {
           className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14"
         >
           <div>
-            <p className="text-primary text-xs font-mono uppercase tracking-[0.2em] mb-3">Templates</p>
+            <p className="text-primary text-xs font-mono uppercase tracking-[0.2em] mb-3">
+              Templates
+            </p>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-              Every contract type,<br />
+              Every contract type,
+              <br />
               <span className="gradient-text">ready to configure.</span>
             </h2>
           </div>
@@ -63,10 +70,10 @@ export default function TemplatesShowcase() {
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {contractTemplates.map((template, i) => {
-            const accent = CARD_ACCENTS[template.type] ?? 'hsl(174 72% 50%)'
-            const tags = CARD_TAGS[template.type] ?? []
-            const isHovered = hoveredType === template.type
-            const featureCount = template.availableFeatures.length
+            const accent = CARD_ACCENTS[template.type] ?? 'hsl(174 72% 50%)';
+            const tags = CARD_TAGS[template.type] ?? [];
+            const isHovered = hoveredType === template.type;
+            const featureCount = template.availableFeatures.length;
 
             return (
               <motion.div
@@ -82,20 +89,28 @@ export default function TemplatesShowcase() {
                     className="relative h-full glass-card p-5 rounded-2xl overflow-hidden transition-all duration-300"
                     style={{
                       borderColor: isHovered ? `${accent}40` : undefined,
-                      boxShadow: isHovered ? `0 0 30px ${accent}15, 0 8px 32px rgba(0,0,0,0.4)` : undefined,
+                      boxShadow: isHovered
+                        ? `0 0 30px ${accent}15, 0 8px 32px rgba(0,0,0,0.4)`
+                        : undefined,
                     }}
                   >
                     {/* Accent bar */}
                     <div
                       className="absolute top-0 left-0 right-0 h-[2px] transition-opacity duration-300"
-                      style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)`, opacity: isHovered ? 1 : 0.3 }}
+                      style={{
+                        background: `linear-gradient(90deg, transparent, ${accent}, transparent)`,
+                        opacity: isHovered ? 1 : 0.3,
+                      }}
                     />
 
                     {/* Icon + feature count */}
                     <div className="flex items-start justify-between mb-4">
                       <div
                         className="w-11 h-11 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-                        style={{ background: `${accent}15`, border: `1px solid ${accent}25` }}
+                        style={{
+                          background: `${accent}15`,
+                          border: `1px solid ${accent}25`,
+                        }}
                       >
                         <TokenIcon
                           name={template.icon as IconName}
@@ -132,17 +147,22 @@ export default function TemplatesShowcase() {
                     {/* Arrow reveal on hover */}
                     <div
                       className="absolute bottom-4 right-4 transition-all duration-300"
-                      style={{ opacity: isHovered ? 1 : 0, transform: isHovered ? 'translateX(0)' : 'translateX(-6px)' }}
+                      style={{
+                        opacity: isHovered ? 1 : 0,
+                        transform: isHovered
+                          ? 'translateX(0)'
+                          : 'translateX(-6px)',
+                      }}
                     >
                       <ArrowRight size={16} style={{ color: accent }} />
                     </div>
                   </div>
                 </Link>
               </motion.div>
-            )
+            );
           })}
         </div>
       </div>
     </section>
-  )
+  );
 }

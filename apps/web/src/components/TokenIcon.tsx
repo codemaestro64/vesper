@@ -1,5 +1,5 @@
-import { Coins, Fingerprint, Layers, Lock, Vote, Users } from 'lucide-react'
-import type { LucideProps } from 'lucide-react'
+import { Coins, Fingerprint, Layers, Lock, Vote, Users } from 'lucide-react';
+import type { LucideProps } from 'lucide-react';
 
 const ICON_MAP = {
   erc20: Coins,
@@ -8,16 +8,16 @@ const ICON_MAP = {
   staking: Lock,
   governance: Vote,
   multisig: Users,
-} as const
+} as const;
 
-export type IconName = keyof typeof ICON_MAP
+export type IconName = keyof typeof ICON_MAP;
 
 interface TokenIconProps extends Omit<LucideProps, 'ref'> {
-  name: IconName
+  name: IconName;
 }
 
 export default function TokenIcon({ name, ...props }: TokenIconProps) {
-  const Icon = ICON_MAP[name]
-  if (!Icon) return null
-  return <Icon {...props} />
+  const Icon = ICON_MAP[name];
+  if (!Icon) return null;
+  return <Icon {...props} />;
 }

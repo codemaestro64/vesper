@@ -23,7 +23,12 @@
     "lint": "eslint \"src/**/*.ts\" --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["vesper", "database", "drizzle", "schema"],
+  "keywords": [
+    "vesper",
+    "database",
+    "drizzle",
+    "schema"
+  ],
   "license": "MIT",
   "dependencies": {
     "@vesper/types": "workspace:*",
@@ -34,6 +39,7 @@
   "devDependencies": {
     "@types/node": "^25.3.2",
     "@vesper/eslint-config": "workspace:*",
+    "@vesper/tsconfig": "workspace:*",
     "concurrently": "^9.2.1",
     "cpx2": "^8.0.0",
     "typescript-eslint": "^8.56.1"

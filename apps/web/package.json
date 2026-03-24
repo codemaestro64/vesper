@@ -4,13 +4,21 @@
   "private": true,
   "description": "Frontend for Vesper – no-code smart contract generation and token management",
   "author": "Onyekachi Michael Ugwueze <mseze.dev@gmail.com>",
-  "keywords": ["vesper", "smart-contract", "no-code", "web3", "blockchain", "solidity"],
+  "keywords": [
+    "vesper",
+    "smart-contract",
+    "no-code",
+    "web3",
+    "blockchain",
+    "solidity"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "lint": "eslint"
+    "lint": "eslint",
+    "lint:fix": "eslint --fix"
   },
   "dependencies": {
     "@metamask/sdk": "^0.34.0",
@@ -27,10 +35,13 @@
     "wagmi": "^3.5.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
+    "@next/eslint-plugin-next": "^16.2.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vesper/eslint-config": "workspace:*",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",

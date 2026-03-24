@@ -1,104 +1,113 @@
-'use client'
+'use client';
 
-import { useMemo, useState, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import Link from 'next/link'
-import { ChevronRight, FileCode, CheckCircle2, Zap } from 'lucide-react'
-import type { ContractTemplate } from '@vesper/types'
-import ConfigSection from '@/components/ConfigSection'
-import AnimatedReveal from '@/components/AnimatedReveal'
-import TemplateSelector from '@/components/TemplateSelector'
-import FeatureSelector from '@/components/FeatureSelector'
-import { Input } from '@/components/ui/input'
-import CodeViewer from '@/components/CodeViewer'
-import { generateContractCode } from '@/lib/contract-generator'
-import { EditorContractProvider } from '@/context/EditorContractContext'
-import { useCreateContract } from '@/hooks/useContracts'
-import { ContractConfig } from '@vesper/types'
+import { useMemo, useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
+import { ChevronRight, FileCode, CheckCircle2, Zap } from 'lucide-react';
+import type { ContractTemplate } from '@vesper/types';
+import ConfigSection from '@/components/ConfigSection';
+import AnimatedReveal from '@/components/AnimatedReveal';
+import TemplateSelector from '@/components/TemplateSelector';
+import FeatureSelector from '@/components/FeatureSelector';
+import { Input } from '@/components/ui/input';
+import CodeViewer from '@/components/CodeViewer';
+import { generateContractCode } from '@/lib/contract-generator';
+import { EditorContractProvider } from '@/context/EditorContractContext';
+import { useCreateContract } from '@/hooks/useContracts';
+import { ContractConfig } from '@vesper/types';
 
-const PLACEHOLDER_CODE = '// Select a template and configure your contract'
+const PLACEHOLDER_CODE = '// Select a template and configure your contract';
 
 export default function CreatePage() {
-  const [selectedTemplate, setSelectedTemplate]   = useState<ContractTemplate | null>(null)
-  const [selectedFeatures, setSelectedFeatures]   = useState<string[]>([])
-  const [contractName, setContractName]           = useState('')
-  const [contractSymbol, setContractSymbol]       = useState('')
-  const [contractDecimals, setContractDecimals]   = useState(18)
-  const [contractInitialSupply, setContractInitialSupply] = useState(0)
-  const [saved,  setSaved]       = useState(false)
-  const { isCreateError, isCreating, createContract } = useCreateContract()
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<ContractTemplate | null>(null);
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
+  const [contractName, setContractName] = useState('');
+  const [contractSymbol, setContractSymbol] = useState('');
+  const [contractDecimals, setContractDecimals] = useState(18);
+  const [contractInitialSupply, setContractInitialSupply] = useState(0);
+  const [saved, setSaved] = useState(false);
+  const { isCreating, createContract } = useCreateContract();
 
   const handleSelectTemplate = useCallback((template: ContractTemplate) => {
-    setSelectedTemplate(template)
-    setSelectedFeatures(template.defaultFeatures ?? [])
-  }, [])
+    setSelectedTemplate(template);
+    setSelectedFeatures(template.defaultFeatures ?? []);
+  }, []);
 
   const handleToggleFeature = useCallback((featureId: string) => {
     setSelectedFeatures((prev) =>
       prev.includes(featureId)
         ? prev.filter((f) => f !== featureId)
         : [...prev, featureId],
-    )
-  }, [])
+    );
+  }, []);
 
   const config = useMemo((): ContractConfig | null => {
-    if (!selectedTemplate || !contractName.trim()) return null
+    if (!selectedTemplate || !contractName.trim()) return null;
     return {
-      type:        selectedTemplate.type,
-      name:        contractName.trim(),
-      symbol:      contractSymbol.trim(),
+      type: selectedTemplate.type,
+      name: contractName.trim(),
+      symbol: contractSymbol.trim(),
       description: selectedTemplate.description,
-      features:    selectedFeatures,
-    }
-  }, [selectedTemplate, selectedFeatures, contractName, contractSymbol])
+      features: selectedFeatures,
+    };
+  }, [selectedTemplate, selectedFeatures, contractName, contractSymbol]);
 
   const code = useMemo(
     () => (config ? generateContractCode(config) : PLACEHOLDER_CODE),
     [config],
-  )
+  );
 
-  const isReady         = !!config
-  const featureCount    = selectedFeatures.length
+  const isReady = !!config;
+  const featureCount = selectedFeatures.length;
   const downloadFilename = contractName.trim()
     ? `${contractName.trim().replace(/\s+/g, '')}.sol`
-    : 'contract.sol'
+    : 'contract.sol';
 
-  const onDeploy = () => {}
-  const onSave = async () => {
+  function onDeploy(): void {}
+
+  function onSave(): void {
     if (!config) return;
 
-    const { type, ...rest } = config
+    const { type, ...rest } = config;
 
     try {
-      await createContract({
+      createContract({
         ...rest,
-        contractType: config.type,
+        contractType: type,
         initialSupply: contractInitialSupply,
         decimals: contractDecimals,
-      })
+      });
 
-      setSaved(true)
-    } catch {}
+      setSaved(true);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   return (
-    <EditorContractProvider value={{
-      ...config,
-      code: code,
-      onDeploy: onDeploy,
-      onSave: onSave,
-      isSaving: isCreating,
-      isDeploying: false,
-      saved
-    }}>
+    <EditorContractProvider
+      value={{
+        ...config,
+        code: code,
+        onDeploy: onDeploy,
+        onSave: onSave,
+        isSaving: isCreating,
+        isDeploying: false,
+        saved,
+      }}
+    >
       <div className="min-h-screen pt-16 flex flex-col">
-
         {/* ── Page header ── */}
         <div className="border-b border-border/50 bg-background/80 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
-
-            <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3 font-mono" aria-label="Breadcrumb">
-              <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+            <nav
+              className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3 font-mono"
+              aria-label="Breadcrumb"
+            >
+              <Link href="/" className="hover:text-primary transition-colors">
+                Home
+              </Link>
               <ChevronRight size={12} className="opacity-40" />
               <span className="text-foreground/70">Create Contract</span>
             </nav>
@@ -110,7 +119,8 @@ export default function CreatePage() {
                   Contract Builder
                 </h1>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Configure your contract below — the generated Solidity updates live on the right.
+                  Configure your contract below — the generated Solidity updates
+                  live on the right.
                 </p>
               </div>
 
@@ -158,16 +168,20 @@ export default function CreatePage() {
         {/* ── Builder ── */}
         <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-4 items-start">
-
             {/* Left: config panel */}
             <div className="glass-card p-5 space-y-6 overflow-auto max-h-[calc(100vh-220px)] scrollbar-hide sticky top-20">
-
               <ConfigSection title="Choose Template" step={1}>
-                <TemplateSelector selected={selectedTemplate} onSelect={handleSelectTemplate} />
+                <TemplateSelector
+                  selected={selectedTemplate}
+                  onSelect={handleSelectTemplate}
+                />
               </ConfigSection>
 
-              <AnimatedReveal show={!!selectedTemplate} id="contract-config" className="space-y-6">
-
+              <AnimatedReveal
+                show={!!selectedTemplate}
+                id="contract-config"
+                className="space-y-6"
+              >
                 <ConfigSection title="Contract Info" step={2}>
                   <div className="glass-card p-4 space-y-3">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -193,7 +207,9 @@ export default function CreatePage() {
                           placeholder="1000000"
                           min={0}
                           value={contractInitialSupply}
-                          onChange={(e) => setContractInitialSupply(Number(e.target.value))}
+                          onChange={(e) =>
+                            setContractInitialSupply(Number(e.target.value))
+                          }
                         />
                         <Input
                           label="Decimals"
@@ -202,23 +218,25 @@ export default function CreatePage() {
                           min={0}
                           max={18}
                           value={contractDecimals}
-                          onChange={(e) => setContractDecimals(Number(e.target.value))}
+                          onChange={(e) =>
+                            setContractDecimals(Number(e.target.value))
+                          }
                         />
                       </div>
                     )}
                   </div>
                 </ConfigSection>
 
-                {selectedTemplate && selectedTemplate.availableFeatures.length > 0 && (
-                  <ConfigSection title="Contract Features" step={3}>
-                    <FeatureSelector
-                      selectedFeatures={selectedFeatures}
-                      availableFeatures={selectedTemplate.availableFeatures}
-                      onToggleFeature={handleToggleFeature}
-                    />
-                  </ConfigSection>
-                )}
-
+                {selectedTemplate &&
+                  selectedTemplate.availableFeatures.length > 0 && (
+                    <ConfigSection title="Contract Features" step={3}>
+                      <FeatureSelector
+                        selectedFeatures={selectedFeatures}
+                        availableFeatures={selectedTemplate.availableFeatures}
+                        onToggleFeature={handleToggleFeature}
+                      />
+                    </ConfigSection>
+                  )}
               </AnimatedReveal>
             </div>
 
@@ -232,10 +250,9 @@ export default function CreatePage() {
                 showWalletBar={isReady}
               />
             </div>
-
           </div>
         </div>
       </div>
     </EditorContractProvider>
-  )
+  );
 }

@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { ContractsModule } from './contracts/contracts.module';
 import { NonceModule } from './nonce/nonce.module';
 import { UsersModule } from './users/users.module';
+import { DownloadModule } from './download/download.module';
 import { APP_PIPE } from '@nestjs/core';
 
 @Module({
@@ -22,6 +23,7 @@ import { APP_PIPE } from '@nestjs/core';
     UsersModule,
     NonceModule,
     AuthModule,
+    DownloadModule,
     // Dynamic import for ServeStatic based on environment
     ServeStaticModule.forRootAsync({
       inject: [ConfigService],

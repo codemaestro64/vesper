@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { cn } from "@/lib/utils";
+import { useEffect } from 'react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { cn } from '@/lib/utils';
 
 export default function WalletConnectButton({
   onConnected,
@@ -36,10 +36,10 @@ export default function WalletConnectButton({
             <button
               onClick={openConnectModal}
               className={cn(
-                "relative h-8 px-4 text-xs font-semibold rounded-lg",
-                "border border-border/60 bg-secondary text-foreground",
-                "transition-all duration-200",
-                "hover:border-primary/40 hover:text-primary hover:bg-secondary/80",
+                'relative h-8 px-4 text-xs font-semibold rounded-lg',
+                'border border-border/60 bg-secondary text-foreground',
+                'transition-all duration-200',
+                'hover:border-primary/40 hover:text-primary hover:bg-secondary/80',
               )}
             >
               Connect Wallet
@@ -66,10 +66,10 @@ export default function WalletConnectButton({
             <button
               onClick={openAccountModal}
               className={cn(
-                "flex items-center gap-2 h-8 px-3 rounded-lg text-xs font-semibold",
-                "border border-primary/30 bg-primary/10 text-primary",
-                "transition-all duration-200",
-                "hover:border-primary/60 hover:bg-primary/15 hover:shadow-[0_0_12px_hsl(38_95%_58%/0.15)]",
+                'flex items-center gap-2 h-8 px-3 rounded-lg text-xs font-semibold',
+                'border border-primary/30 bg-primary/10 text-primary',
+                'transition-all duration-200',
+                'hover:border-primary/60 hover:bg-primary/15 hover:shadow-[0_0_12px_hsl(38_95%_58%/0.15)]',
               )}
             >
               {account.displayName}

@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import type { ReactNode, ButtonHTMLAttributes } from 'react'
-import { cn } from '@/lib/utils'
+import type { ReactNode, ButtonHTMLAttributes } from 'react';
+import { cn } from '@/lib/utils';
 
 interface SelectableCardProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  selected: boolean
-  children: ReactNode
-  className?: string
+  selected: boolean;
+  children: ReactNode;
+  className?: string;
 }
 
 /**
@@ -29,11 +29,11 @@ export default function SelectableCard({
         selected
           ? 'border-primary/40 glow-primary'
           : 'hover:border-primary/20 hover:glow-primary',
-        className
+        className,
       )}
       {...props}
     >
       {children}
     </button>
-  )
+  );
 }

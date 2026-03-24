@@ -1,5 +1,5 @@
-import { ChevronRight, FileCode, CheckCircle2 } from "lucide-react";
-import Link from "next/link";
+import { ChevronRight, FileCode } from 'lucide-react';
+import Link from 'next/link';
 
 export default function DashboardPage() {
   return (

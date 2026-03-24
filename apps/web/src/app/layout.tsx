@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
-import { spaceGrotesk, jetbrainsMono } from "@/lib/fonts";
-import { Providers } from "@/app/providers";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { spaceGrotesk, jetbrainsMono } from '@/lib/fonts';
+import { Providers } from '@/app/providers';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: "Vesper — Smart Contract Builder",
+  title: 'Vesper — Smart Contract Builder',
   description:
-    "Build production-ready Solidity smart contracts in seconds. No coding required.",
+    'Build production-ready Solidity smart contracts in seconds. No coding required.',
 };
 
 export default function RootLayout({

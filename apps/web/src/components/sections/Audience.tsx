@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { motion, useInView, AnimatePresence } from 'framer-motion'
-import { useRef, useState } from 'react'
-import { Lightbulb, Terminal, ShieldCheck } from 'lucide-react'
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { useRef, useState } from 'react';
+import { Lightbulb, Terminal, ShieldCheck } from 'lucide-react';
 
 const AUDIENCES = [
   {
@@ -24,10 +24,10 @@ const AUDIENCES = [
     id: 'developers',
     icon: Terminal,
     label: 'Smart Contract Devs',
-    tagline: "Boilerplate is beneath you. We agree.",
+    tagline: 'Boilerplate is beneath you. We agree.',
     accent: 'hsl(174 72% 50%)',
     description:
-      "You know your ERC-165 from your ERC-2981. You also know that typing out the same OpenZeppelin constructor args for the fifteenth time is a waste of your brain. Use Vesper to scaffold, then go build the interesting parts — the custom logic that actually matters.",
+      'You know your ERC-165 from your ERC-2981. You also know that typing out the same OpenZeppelin constructor args for the fifteenth time is a waste of your brain. Use Vesper to scaffold, then go build the interesting parts — the custom logic that actually matters.',
     callouts: [
       'Correct override signatures, every time',
       'NatSpec pre-written — skip the ceremony',
@@ -39,7 +39,7 @@ const AUDIENCES = [
     id: 'auditors',
     icon: ShieldCheck,
     label: 'Security Auditors',
-    tagline: "Fewer surprises. More signal.",
+    tagline: 'Fewer surprises. More signal.',
     accent: 'hsl(262 80% 65%)',
     description:
       "Generated contracts follow predictable, documented patterns. OpenZeppelin bases are battle-tested. NatSpec is always present. Access control is consistently applied. You still need to audit — but you're auditing business logic, not chasing missing events or wrong visibility modifiers.",
@@ -50,19 +50,23 @@ const AUDIENCES = [
     ],
     bg: 'hsl(262 80% 65% / 0.04)',
   },
-] as const
+] as const;
 
-type AudienceId = typeof AUDIENCES[number]['id']
+type AudienceId = (typeof AUDIENCES)[number]['id'];
 
 export default function AudienceSection() {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
-  const [active, setActive] = useState<AudienceId>('founders')
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+  const [active, setActive] = useState<AudienceId>('founders');
 
-  const activeAudience = AUDIENCES.find(a => a.id === active)!
+  const activeAudience = AUDIENCES.find((a) => a.id === active)!;
 
   return (
-    <section id="audience" ref={ref} className="relative py-28 px-4 sm:px-6 overflow-hidden">
+    <section
+      id="audience"
+      ref={ref}
+      className="relative py-28 px-4 sm:px-6 overflow-hidden"
+    >
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
 
       <div className="max-w-6xl mx-auto">
@@ -73,9 +77,12 @@ export default function AudienceSection() {
           transition={{ duration: 0.5 }}
           className="mb-14"
         >
-          <p className="text-primary text-xs font-mono uppercase tracking-[0.2em] mb-3">Who it's for</p>
+          <p className="text-primary text-xs font-mono uppercase tracking-[0.2em] mb-3">
+            Who it's for
+          </p>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-            Built for the entire<br />
+            Built for the entire
+            <br />
             <span className="gradient-text">Web3 stack.</span>
           </h2>
         </motion.div>
@@ -89,8 +96,8 @@ export default function AudienceSection() {
             className="flex lg:flex-col gap-2"
           >
             {AUDIENCES.map((audience) => {
-              const Icon = audience.icon
-              const isActive = active === audience.id
+              const Icon = audience.icon;
+              const isActive = active === audience.id;
               return (
                 <button
                   key={audience.id}
@@ -118,11 +125,13 @@ export default function AudienceSection() {
                   >
                     <Icon size={16} style={{ color: audience.accent }} />
                   </div>
-                  <span className={`text-sm font-medium transition-colors duration-200 ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
+                  <span
+                    className={`text-sm font-medium transition-colors duration-200 ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}
+                  >
                     {audience.label}
                   </span>
                 </button>
-              )
+              );
             })}
           </motion.div>
 
@@ -182,5 +191,5 @@ export default function AudienceSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
