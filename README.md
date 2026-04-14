@@ -98,30 +98,30 @@ Each generator exports a `baseParts()` function that returns a skeleton `Contrac
 ## TODO
 
 ### Wallet & User Accounts
-- [ ] Add wallet connection (wagmi / RainbowKit)
-- [ ] Create `apps/api` NestJS service with auth via wallet signature
-- [ ] User profile — save and name contracts
-- [ ] Contract library — list, view, and re-edit saved contracts
+- [x] Add wallet connection (wagmi / RainbowKit)
+- [x] Create `apps/api` NestJS service with auth via wallet signature
+- [x] User profile — save and name contracts
+- [x] Contract library — list, view, and re-edit saved contracts
 - [ ] Share contracts via public link
 
 ### Deployment
 - [ ] Deploy directly from the app (via ethers.js / viem — no backend needed for testnets)
 - [ ] Network selector (mainnet, Sepolia, Base, Arbitrum, etc.)
-- [ ] Post-deploy dashboard — address, tx hash, verified link on Etherscan
+- [x] Post-deploy dashboard — address, tx hash, verified link on Etherscan
 
 ### Export
-- [ ] Download full Hardhat project (contracts, ignition scripts, config, `package.json`)
-- [ ] Download full Foundry project (`src/`, `test/`, `foundry.toml`, `Makefile`)
+- [x] Download full Hardhat project (contracts, ignition scripts, config, `package.json`)
+- [x] Download full Foundry project (`src/`, `test/`, `foundry.toml`, `Makefile`)
 - [ ] Copy ABI alongside `.sol` file
 
 ### Backend (`apps/api`)
-- [ ] NestJS project scaffold
-- [ ] Contracts CRUD endpoints
-- [ ] JWT auth via wallet signature (SIWE)
-- [ ] PostgreSQL + Prisma schema for saved contracts
-- [ ] Rate limiting
+- [x] NestJS project scaffold
+- [x] Contracts CRUD endpoints
+- [x] JWT auth via wallet signature (SIWE)
+- [x] PostgreSQL + Prisma schema for saved contracts
+- [x] Rate limiting
 
 ### General
 - [ ] Dark / light theme toggle
-- [ ] Mobile layout improvements on `/create`
+- [x] Mobile layout improvements on `/create`
 - [ ] Unit tests for the contract generator engine
